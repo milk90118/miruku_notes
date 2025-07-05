@@ -1,0 +1,380 @@
+/* ================================
+   主題樣式定義 - themes.css
+   ================================ */
+
+/* 深色模式樣式 */
+body.dark-mode {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+body.dark-mode header {
+  background: linear-gradient(135deg, #444444, #666666);
+  border-bottom-color: var(--dark-border);
+}
+
+body.dark-mode .note-form {
+  background: var(--dark-card);
+  border-color: var(--dark-border);
+}
+
+body.dark-mode .note-card {
+  background: var(--dark-card);
+  border-color: var(--dark-border);
+}
+
+body.dark-mode .note-title {
+  color: var(--primary);
+}
+
+body.dark-mode .note-content {
+  color: var(--dark-text);
+}
+
+body.dark-mode .note-meta {
+  color: #999;
+  border-top-color: var(--dark-border);
+}
+
+body.dark-mode .category-badge {
+  background: var(--dark-border);
+  color: var(--dark-text);
+}
+
+body.dark-mode .input, 
+body.dark-mode select, 
+body.dark-mode textarea {
+  background: var(--dark-card);
+  border-color: var(--dark-border);
+  color: var(--dark-text);
+}
+
+body.dark-mode .stat-card {
+  background: var(--dark-card);
+  color: var(--dark-text);
+}
+
+body.dark-mode .stat-number {
+  color: var(--primary);
+}
+
+body.dark-mode .stat-label {
+  color: #999;
+}
+
+body.dark-mode footer {
+  border-top-color: var(--dark-border);
+  color: #999;
+}
+
+body.dark-mode .empty-state {
+  color: #999;
+}
+
+body.dark-mode .empty-state h3 {
+  color: var(--primary);
+}
+
+/* ================================
+   自訂主題 - 可以新增更多主題
+   ================================ */
+
+/* 海洋主題 */
+body.theme-ocean {
+  --primary: #4A90E2;
+  --secondary: #7ED4F7;
+  --background: #F0F8FF;
+  --text: #2C3E50;
+  --highlight: #3498DB;
+  --note: #BDE6FF;
+  --success: #27AE60;
+  --danger: #E74C3C;
+  --info: #3498DB;
+}
+
+body.theme-ocean.dark-mode {
+  --dark-bg: #0D1421;
+  --dark-text: #FFFFFF;
+  --dark-card: #1E2A3A;
+  --dark-border: #34495E;
+}
+
+/* 森林主題 */
+body.theme-forest {
+  --primary: #27AE60;
+  --secondary: #95A5A6;
+  --background: #F8FFF8;
+  --text: #2C3E50;
+  --highlight: #2ECC71;
+  --note: #D5F4E6;
+  --success: #27AE60;
+  --danger: #E74C3C;
+  --info: #3498DB;
+}
+
+body.theme-forest.dark-mode {
+  --dark-bg: #0F1B0F;
+  --dark-text: #FFFFFF;
+  --dark-card: #1A2F1A;
+  --dark-border: #2C5530;
+}
+
+/* 日落主題 */
+body.theme-sunset {
+  --primary: #FF6B6B;
+  --secondary: #FFB3B3;
+  --background: #FFF5F5;
+  --text: #2C3E50;
+  --highlight: #FF8E8E;
+  --note: #FFE0E0;
+  --success: #27AE60;
+  --danger: #E74C3C;
+  --info: #3498DB;
+}
+
+body.theme-sunset.dark-mode {
+  --dark-bg: #1F0A0A;
+  --dark-text: #FFFFFF;
+  --dark-card: #2F1515;
+  --dark-border: #4A2C2C;
+}
+
+/* 紫羅蘭主題 */
+body.theme-violet {
+  --primary: #9B59B6;
+  --secondary: #D7BDE2;
+  --background: #FAF5FF;
+  --text: #2C3E50;
+  --highlight: #8E44AD;
+  --note: #EBDEF0;
+  --success: #27AE60;
+  --danger: #E74C3C;
+  --info: #3498DB;
+}
+
+body.theme-violet.dark-mode {
+  --dark-bg: #1A0B1F;
+  --dark-text: #FFFFFF;
+  --dark-card: #2A1A35;
+  --dark-border: #44336B;
+}
+
+/* ================================
+   主題切換動畫
+   ================================ */
+
+/* 平滑過渡效果 */
+body, 
+.note-card, 
+.note-form, 
+.stat-card,
+.input,
+select,
+textarea {
+  transition: 
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* 主題切換按鈕樣式 */
+.theme-selector {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.theme-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-btn:hover {
+  transform: scale(1.1);
+  border-color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.theme-btn.active {
+  border-color: white;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.5);
+}
+
+/* 預設主題按鈕 */
+.theme-btn.default {
+  background: linear-gradient(135deg, #F8C8DC, #FFB3AB);
+}
+
+/* 海洋主題按鈕 */
+.theme-btn.ocean {
+  background: linear-gradient(135deg, #4A90E2, #7ED4F7);
+}
+
+/* 森林主題按鈕 */
+.theme-btn.forest {
+  background: linear-gradient(135deg, #27AE60, #2ECC71);
+}
+
+/* 日落主題按鈕 */
+.theme-btn.sunset {
+  background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+}
+
+/* 紫羅蘭主題按鈕 */
+.theme-btn.violet {
+  background: linear-gradient(135deg, #9B59B6, #8E44AD);
+}
+
+/* ================================
+   通知樣式（深色模式適配）
+   ================================ */
+
+body.dark-mode .notification {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+/* ================================
+   動畫定義
+   ================================ */
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 載入動畫 */
+.loading {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* 新增筆記動畫 */
+.note-card.new {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* ================================
+   印刷樣式（列印時使用）
+   ================================ */
+
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .note-form,
+  .stats,
+  .search-section,
+  .btn,
+  header button,
+  footer {
+    display: none !important;
+  }
+  
+  .note-card {
+    background: white !important;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+  
+  .note-title {
+    color: black !important;
+    font-size: 1.2rem !important;
+  }
+  
+  .note-content {
+    color: black !important;
+  }
+}
+
+/* ================================
+   高對比度模式支援
+   ================================ */
+
+@media (prefers-contrast: high) {
+  :root {
+    --primary: #000080;
+    --secondary: #000000;
+    --background: #FFFFFF;
+    --text: #000000;
+    --highlight: #0000FF;
+    --note: #F0F0F0;
+  }
+  
+  body.dark-mode {
+    --dark-bg: #000000;
+    --dark-text: #FFFFFF;
+    --dark-card: #1A1A1A;
+    --dark-border: #666666;
+  }
+  
+  .btn {
+    border: 2px solid currentColor;
+  }
+}
+
+/* ================================
+   減少動畫模式支援
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
