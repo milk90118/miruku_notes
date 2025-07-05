@@ -1,587 +1,135 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>醫學筆記 - 簡單版本</title>
-    <style>
-        /* 日本傳統色票 */
-        :root {
-            --primary: #5B9BD5;     /* 海松藍 */
-            --secondary: #B8C5D1;   /* 柳鼠 */
-            --background: #FFFEF7;  /* 胡粉 */
-            --text: #1C1C1C;        /* 墨 */
-            --light: #F0F8FF;       /* 藍白 */
-            --success: #7CB342;     /* 若草 */
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Miruku 醫學筆記</title>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #F8C8DC;       /* 櫻花粉 */
+      --secondary: #D8D8D8;     /* 和紙灰 */
+      --background: #FFFDF9;    /* 鵝卵白 */
+      --text: #444444;          /* 淺墨灰 */
+      --highlight: #FFB3AB;     /* 蜜桃橘 */
+      --note: #D5E8D4;          /* 抹茶奶綠 */
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: var(--background);
-            color: var(--text);
-            line-height: 1.6;
-        }
+    body {
+      font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+      background-color: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem;
+    }
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
 
-        /* Header */
-        header {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+    header h1 {
+      color: var(--primary);
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
 
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-        }
+    header p {
+      color: var(--secondary);
+    }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
+    .note-card {
+      background: white;
+      border: 2px dashed var(--note);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 2px 4px 10px rgba(0,0,0,0.05);
+      transition: transform 0.2s ease-in-out;
+    }
 
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
+    .note-card:hover {
+      transform: scale(1.02);
+    }
 
-        .nav-menu a {
-            text-decoration: none;
-            color: var(--text);
-            font-weight: 500;
-            transition: color 0.3s;
-        }
+    .note-title {
+      font-size: 1.4rem;
+      color: var(--highlight);
+      margin-bottom: 0.5rem;
+    }
 
-        .nav-menu a:hover {
-            color: var(--primary);
-        }
+    .note-content {
+      font-size: 1rem;
+      color: var(--text);
+    }
 
-        /* Main Content */
-        main {
-            padding: 2rem 0;
-        }
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 1.4rem;
+      background-color: var(--primary);
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-top: 1rem;
+    }
 
-        .hero {
-            text-align: center;
-            background: var(--light);
-            padding: 3rem 1rem;
-            border-radius: 16px;
-            margin-bottom: 3rem;
-        }
+    .btn:hover {
+      background-color: var(--highlight);
+    }
 
-        .hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: var(--text);
-        }
+    footer {
+      margin-top: 4rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--secondary);
+    }
 
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--secondary);
-            margin-bottom: 2rem;
-        }
-
-        /* Search Bar */
-        .search-container {
-            max-width: 600px;
-            margin: 0 auto 3rem;
-        }
-
-        .search-box {
-            position: relative;
-        }
-
-        #searchInput {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid var(--secondary);
-            border-radius: 25px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        #searchInput:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        /* Add Note Button */
-        .add-note-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 25px;
-            font-size: 1rem;
-            cursor: pointer;
-            margin-bottom: 2rem;
-            transition: background 0.3s;
-        }
-
-        .add-note-btn:hover {
-            background: #4a8bc2;
-        }
-
-        /* Notes Grid */
-        .notes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .note-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-        }
-
-        .note-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .note-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text);
-        }
-
-        .note-category {
-            background: var(--light);
-            color: var(--primary);
-            padding: 0.3rem 0.8rem;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            margin-bottom: 1rem;
-            display: inline-block;
-        }
-
-        .note-content {
-            color: var(--secondary);
-            margin-bottom: 1rem;
-            line-height: 1.6;
-        }
-
-        .note-date {
-            color: var(--secondary);
-            font-size: 0.9rem;
-        }
-
-        .note-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .btn-small {
-            padding: 0.4rem 1rem;
-            border: none;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-edit {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-delete {
-            background: #dc3545;
-            color: white;
-        }
-
-        .btn-small:hover {
-            transform: scale(1.05);
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-        }
-
-        .modal-content {
-            background: white;
-            margin: 5% auto;
-            padding: 2rem;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 600px;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover {
-            color: var(--text);
-        }
-
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid var(--secondary);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .btn-submit {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 25px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .btn-submit:hover {
-            background: #4a8bc2;
-        }
-
-        /* 響應式設計 */
-        @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .notes-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .modal-content {
-                width: 95%;
-                margin: 10% auto;
-            }
-        }
-
-        /* No results message */
-        .no-results {
-            text-align: center;
-            padding: 3rem;
-            color: var(--secondary);
-        }
-
-        .no-results h3 {
-            margin-bottom: 1rem;
-        }
-    </style>
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 2rem;
+      }
+      .note-card {
+        padding: 1rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <nav class="container">
-            <div class="logo">醫學筆記</div>
-            <ul class="nav-menu">
-                <li><a href="#home">首頁</a></li>
-                <li><a href="#notes">筆記</a></li>
-                <li><a href="#about">關於</a></li>
-            </ul>
-        </nav>
-    </header>
+  <header>
+    <h1>Miruku 醫學筆記</h1>
+    <p>🌸 記錄妳的每一份努力與成長 ✨</p>
+  </header>
 
-    <!-- Main Content -->
-    <main class="container">
-        <!-- Hero Section -->
-        <section class="hero">
-            <h1>我的醫學學習筆記</h1>
-            <p>記錄學習過程，整理醫學知識</p>
-        </section>
-
-        <!-- Search Bar -->
-        <div class="search-container">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="搜尋筆記標題或內容...">
-            </div>
-        </div>
-
-        <!-- Add Note Button -->
-        <button class="add-note-btn" onclick="openModal()">+ 新增筆記</button>
-
-        <!-- Notes Grid -->
-        <div class="notes-grid" id="notesGrid">
-            <!-- 筆記卡片會在這裡動態生成 -->
-        </div>
-
-        <!-- No Results Message -->
-        <div class="no-results" id="noResults" style="display: none;">
-            <h3>找不到相關筆記</h3>
-            <p>試試其他關鍵字或新增一篇筆記吧！</p>
-        </div>
-    </main>
-
-    <!-- Modal -->
-    <div id="noteModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2 id="modalTitle">新增筆記</h2>
-            <form id="noteForm">
-                <div class="form-group">
-                    <label for="noteTitle">標題</label>
-                    <input type="text" id="noteTitle" required>
-                </div>
-                <div class="form-group">
-                    <label for="noteCategory">分類</label>
-                    <select id="noteCategory">
-                        <option value="基礎醫學">基礎醫學</option>
-                        <option value="臨床醫學">臨床醫學</option>
-                        <option value="解剖學">解剖學</option>
-                        <option value="生理學">生理學</option>
-                        <option value="病理學">病理學</option>
-                        <option value="藥理學">藥理學</option>
-                        <option value="其他">其他</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="noteContent">內容</label>
-                    <textarea id="noteContent" required></textarea>
-                </div>
-                <button type="submit" class="btn-submit">儲存筆記</button>
-            </form>
-        </div>
+  <section class="note-card">
+    <div class="note-title">🫀 心臟解剖學</div>
+    <div class="note-content">
+      心臟分為四腔室：左心房、右心房、左心室、右心室。心壁由三層構成：心內膜、心肌層、心外膜。
     </div>
+  </section>
 
-    <script>
-        // 筆記資料（使用本地儲存）
-        let notes = JSON.parse(localStorage.getItem('medicalNotes')) || [];
-        let editingNoteId = null;
+  <section class="note-card">
+    <div class="note-title">💉 血壓調節</div>
+    <div class="note-content">
+      血壓由交感神經、腎素-血管張力素系統與心輸出量共同調控。收縮壓 90~120，舒張壓 60~80。
+    </div>
+  </section>
 
-        // 初始化頁面
-        document.addEventListener('DOMContentLoaded', function() {
-            displayNotes();
-            setupEventListeners();
-        });
+  <div style="text-align:center">
+    <button class="btn">➕ 新增筆記</button>
+  </div>
 
-        // 設定事件監聽器
-        function setupEventListeners() {
-            // 搜尋功能
-            document.getElementById('searchInput').addEventListener('input', function() {
-                searchNotes(this.value);
-            });
-
-            // 表單提交
-            document.getElementById('noteForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                saveNote();
-            });
-
-            // 點擊模態框外部關閉
-            window.addEventListener('click', function(e) {
-                const modal = document.getElementById('noteModal');
-                if (e.target === modal) {
-                    closeModal();
-                }
-            });
-        }
-
-        // 顯示筆記
-        function displayNotes(notesToShow = notes) {
-            const grid = document.getElementById('notesGrid');
-            const noResults = document.getElementById('noResults');
-            
-            if (notesToShow.length === 0) {
-                grid.innerHTML = '';
-                noResults.style.display = 'block';
-                return;
-            }
-
-            noResults.style.display = 'none';
-            
-            grid.innerHTML = notesToShow.map(note => `
-                <div class="note-card">
-                    <h3 class="note-title">${note.title}</h3>
-                    <span class="note-category">${note.category}</span>
-                    <p class="note-content">${note.content.substring(0, 150)}${note.content.length > 150 ? '...' : ''}</p>
-                    <p class="note-date">${new Date(note.date).toLocaleDateString('zh-TW')}</p>
-                    <div class="note-actions">
-                        <button class="btn-small btn-edit" onclick="editNote(${note.id})">編輯</button>
-                        <button class="btn-small btn-delete" onclick="deleteNote(${note.id})">刪除</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // 搜尋筆記
-        function searchNotes(query) {
-            if (!query.trim()) {
-                displayNotes();
-                return;
-            }
-
-            const filteredNotes = notes.filter(note =>
-                note.title.toLowerCase().includes(query.toLowerCase()) ||
-                note.content.toLowerCase().includes(query.toLowerCase()) ||
-                note.category.toLowerCase().includes(query.toLowerCase())
-            );
-
-            displayNotes(filteredNotes);
-        }
-
-        // 開啟模態框
-        function openModal() {
-            document.getElementById('noteModal').style.display = 'block';
-            document.getElementById('modalTitle').textContent = '新增筆記';
-            document.getElementById('noteForm').reset();
-            editingNoteId = null;
-        }
-
-        // 關閉模態框
-        function closeModal() {
-            document.getElementById('noteModal').style.display = 'none';
-            document.getElementById('noteForm').reset();
-            editingNoteId = null;
-        }
-
-        // 儲存筆記
-        function saveNote() {
-            const title = document.getElementById('noteTitle').value;
-            const category = document.getElementById('noteCategory').value;
-            const content = document.getElementById('noteContent').value;
-
-            if (editingNoteId) {
-                // 編輯現有筆記
-                const noteIndex = notes.findIndex(note => note.id === editingNoteId);
-                notes[noteIndex] = {
-                    ...notes[noteIndex],
-                    title,
-                    category,
-                    content,
-                    date: new Date().toISOString()
-                };
-            } else {
-                // 新增筆記
-                const newNote = {
-                    id: Date.now(),
-                    title,
-                    category,
-                    content,
-                    date: new Date().toISOString()
-                };
-                notes.unshift(newNote);
-            }
-
-            // 儲存到本地儲存
-            localStorage.setItem('medicalNotes', JSON.stringify(notes));
-            
-            // 更新顯示
-            displayNotes();
-            closeModal();
-        }
-
-        // 編輯筆記
-        function editNote(id) {
-            const note = notes.find(note => note.id === id);
-            if (note) {
-                document.getElementById('noteTitle').value = note.title;
-                document.getElementById('noteCategory').value = note.category;
-                document.getElementById('noteContent').value = note.content;
-                document.getElementById('modalTitle').textContent = '編輯筆記';
-                document.getElementById('noteModal').style.display = 'block';
-                editingNoteId = id;
-            }
-        }
-
-        // 刪除筆記
-        function deleteNote(id) {
-            if (confirm('確定要刪除這篇筆記嗎？')) {
-                notes = notes.filter(note => note.id !== id);
-                localStorage.setItem('medicalNotes', JSON.stringify(notes));
-                displayNotes();
-            }
-        }
-
-        // 示例資料（第一次使用時）
-        if (notes.length === 0) {
-            notes = [
-                {
-                    id: 1,
-                    title: "心臟解剖學基礎",
-                    category: "解剖學",
-                    content: "心臟是人體循環系統的核心器官，分為四個腔室：左心房、右心房、左心室、右心室。心臟壁由心內膜、心肌層和心外膜三層組成。",
-                    date: new Date().toISOString()
-                },
-                {
-                    id: 2,
-                    title: "血壓調節機制",
-                    category: "生理學",
-                    content: "血壓調節涉及多個系統，包括心血管系統、腎素-血管緊張素系統、交感神經系統等。正常血壓範圍為收縮壓90-120mmHg，舒張壓60-80mmHg。",
-                    date: new Date().toISOString()
-                },
-                {
-                    id: 3,
-                    title: "糖尿病分類與診斷",
-                    category: "臨床醫學",
-                    content: "糖尿病主要分為1型和2型。診斷標準包括：空腹血糖≥7.0mmol/L，餐後2小時血糖≥11.1mmol/L，或HbA1c≥6.5%。",
-                    date: new Date().toISOString()
-                }
-            ];
-            localStorage.setItem('medicalNotes', JSON.stringify(notes));
-        }
-    </script>
+  <footer>
+    © 2025 Miruku Notes | 用愛與熱情記錄每一頁知識 📖💗
+  </footer>
 </body>
 </html>
