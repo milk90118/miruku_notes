@@ -21,6 +21,7 @@ class CategoryManager {
       this.categories = [...this.defaultCategories];
       this.saveCategories();
     }
+    console.log('CategoryManager 初始化完成，載入', this.categories.length, '個類別');
   }
 
   // 載入類別
@@ -108,16 +109,16 @@ class CategoryManager {
     }
 
     // 檢查是否有筆記使用此類別
-    if (typeof notesManager !== 'undefined') {
+    if (typeof window.notesManager !== 'undefined' && window.notesManager) {
       const categoryName = this.categories[index].name;
-      const notesWithCategory = notesManager.notes.filter(note => note.category === categoryName);
+      const notesWithCategory = window.notesManager.notes.filter(note => note.category === categoryName);
       
       if (notesWithCategory.length > 0) {
         // 將使用此類別的筆記改為"其他"
         notesWithCategory.forEach(note => {
           note.category = '其他';
         });
-        notesManager.saveNotes();
+        window.notesManager.saveNotes();
       }
     }
 
@@ -135,7 +136,10 @@ class CategoryManager {
   // 更新筆記表單的類別選單
   updateCategorySelect() {
     const selectElement = document.getElementById('noteCategory');
-    if (!selectElement) return;
+    if (!selectElement) {
+      console.warn('找不到 noteCategory 選單元素');
+      return;
+    }
 
     // 記住目前選中的值
     const currentValue = selectElement.value;
@@ -147,7 +151,7 @@ class CategoryManager {
     this.categories.forEach(category => {
       const option = document.createElement('option');
       option.value = category.name;
-      option.textContent = `${category.icon} ${category.name}`;
+      option.textContent = category.icon + ' ' + category.name;
       option.style.color = category.color;
       selectElement.appendChild(option);
     });
@@ -156,8 +160,10 @@ class CategoryManager {
     if (this.getCategoryByName(currentValue)) {
       selectElement.value = currentValue;
     } else {
-      selectElement.value = this.categories[0]?.name || '';
+      selectElement.value = this.categories[0] ? this.categories[0].name : '';
     }
+
+    console.log('類別選單已更新，共', this.categories.length, '個選項');
   }
 
   // 取得類別的圖示
@@ -187,7 +193,7 @@ class CategoryManager {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `miruku-categories-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = 'miruku-categories-' + new Date().toISOString().split('T')[0] + '.json';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -228,6 +234,3 @@ class CategoryManager {
     }
   }
 }
-
-// 全域類別管理器實例
-let categoryManager = null;

@@ -16,6 +16,7 @@ class NotesManager {
       this.loadDefaultNotes();
     }
     this.filteredNotes = [...this.notes];
+    console.log('NotesManager 初始化完成，載入', this.notes.length, '筆記');
   }
 
   // 載入預設筆記
@@ -199,7 +200,7 @@ class NotesManager {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `miruku-notes-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = 'miruku-notes-' + new Date().toISOString().split('T')[0] + '.json';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -267,21 +268,4 @@ class NotesManager {
     this.filteredNotes = [];
     this.saveNotes();
   }
-}
-
-// 分類圖示對應
-const categoryIcons = {
-  "解剖學": "🦴",
-  "生理學": "❤️",
-  "藥理學": "💊",
-  "臨床醫學": "🏥",
-  "病理學": "🔬",
-  "影像診斷學": "🩺",
-  "診斷學": "🩺",
-  "其他": "📚"
-};
-
-// 取得分類圖示
-function getCategoryIcon(category) {
-  return categoryIcons[category] || "📝";
 }
