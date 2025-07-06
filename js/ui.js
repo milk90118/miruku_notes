@@ -3,7 +3,7 @@ class UIManager {
   constructor() {
     this.currentTheme = 'default';
     this.isDarkMode = false;
-    this.themes = ['default', 'ocean', 'forest', 'sunset', 'violet'];
+    this.themes = ['default', 'milktea', 'lavender', 'matcha', 'peach', 'cloud'];
   }
 
   // 初始化 UI
@@ -56,10 +56,11 @@ class UIManager {
   getThemeName(theme) {
     const names = {
       default: '櫻花粉主題',
-      ocean: '海洋藍主題',
-      forest: '森林綠主題',
-      sunset: '日落橘主題',
-      violet: '紫羅蘭主題'
+      milktea: '奶茶拿鐵',
+      lavender: '薰衣草奶昔',
+      matcha: '抹茶奶霜',
+      peach: '蜜桃奶昔',
+      cloud: '雲朵米色'
     };
     return names[theme] || theme;
   }

@@ -76,87 +76,234 @@ body.dark-mode .empty-state h3 {
 }
 
 /* ================================
-   自訂主題 - 可以新增更多主題
+   日本雜誌風格溫柔主題
    ================================ */
 
-/* 海洋主題 */
-body.theme-ocean {
-  --primary: #4A90E2;
-  --secondary: #7ED4F7;
-  --background: #F0F8FF;
-  --text: #2C3E50;
-  --highlight: #3498DB;
-  --note: #BDE6FF;
-  --success: #27AE60;
-  --danger: #E74C3C;
-  --info: #3498DB;
+/* 奶茶拿鐵主題 - Milk Tea Latte */
+body.theme-milktea {
+  --primary: #D4A574;        /* 溫暖奶茶色 */
+  --secondary: #E8D5C4;      /* 淺駝色 */
+  --background: #FAF7F2;     /* 溫暖米白 */
+  --text: #5D4E37;           /* 溫和咖啡色 */
+  --highlight: #C8956D;      /* 焦糖色 */
+  --note: #F0E6D6;           /* 奶油色 */
+  --success: #A4B494;        /* 溫和綠 */
+  --danger: #D4A574;         /* 溫和橘 */
+  --info: #B8A082;           /* 溫和灰棕 */
 }
 
-body.theme-ocean.dark-mode {
-  --dark-bg: #0D1421;
-  --dark-text: #FFFFFF;
-  --dark-card: #1E2A3A;
-  --dark-border: #34495E;
+body.theme-milktea.dark-mode {
+  --dark-bg: #2C2118;
+  --dark-text: #F5F0E8;
+  --dark-card: #3A2F22;
+  --dark-border: #5D4E37;
 }
 
-/* 森林主題 */
-body.theme-forest {
-  --primary: #27AE60;
-  --secondary: #95A5A6;
-  --background: #F8FFF8;
-  --text: #2C3E50;
-  --highlight: #2ECC71;
-  --note: #D5F4E6;
-  --success: #27AE60;
-  --danger: #E74C3C;
-  --info: #3498DB;
+/* 薰衣草奶昔主題 - Lavender Cream */
+body.theme-lavender {
+  --primary: #C8A8D8;        /* 溫柔薰衣草 */
+  --secondary: #E6D7ED;      /* 淡紫灰 */
+  --background: #F9F6FB;     /* 淡紫白 */
+  --text: #6B5B73;           /* 溫和紫灰 */
+  --highlight: #B695C0;      /* 柔和紫 */
+  --note: #F0E8F3;           /* 淡紫霧 */
+  --success: #A8C8A8;        /* 薄荷綠 */
+  --danger: #D8A8B8;         /* 玫瑰粉 */
+  --info: #A8B8D8;           /* 淡藍紫 */
 }
 
-body.theme-forest.dark-mode {
-  --dark-bg: #0F1B0F;
-  --dark-text: #FFFFFF;
-  --dark-card: #1A2F1A;
-  --dark-border: #2C5530;
+body.theme-lavender.dark-mode {
+  --dark-bg: #1F1A21;
+  --dark-text: #F0E8F3;
+  --dark-card: #2D252F;
+  --dark-border: #6B5B73;
 }
 
-/* 日落主題 */
-body.theme-sunset {
-  --primary: #FF6B6B;
-  --secondary: #FFB3B3;
-  --background: #FFF5F5;
-  --text: #2C3E50;
-  --highlight: #FF8E8E;
-  --note: #FFE0E0;
-  --success: #27AE60;
-  --danger: #E74C3C;
-  --info: #3498DB;
+/* 抹茶奶霜主題 - Matcha Cream */
+body.theme-matcha {
+  --primary: #A8C8A8;        /* 溫柔抹茶 */
+  --secondary: #D0E0D0;      /* 淡綠灰 */
+  --background: #F6FAF6;     /* 淡綠白 */
+  --text: #5A6B5A;           /* 溫和森林綠 */
+  --highlight: #94B894;      /* 柔和綠 */
+  --note: #E8F2E8;           /* 淡抹茶霧 */
+  --success: #A8C8A8;        /* 抹茶綠 */
+  --danger: #C8A8A8;         /* 溫和粉紅 */
+  --info: #A8B8C8;           /* 淡青綠 */
 }
 
-body.theme-sunset.dark-mode {
-  --dark-bg: #1F0A0A;
-  --dark-text: #FFFFFF;
-  --dark-card: #2F1515;
-  --dark-border: #4A2C2C;
+body.theme-matcha.dark-mode {
+  --dark-bg: #1A1F1A;
+  --dark-text: #E8F2E8;
+  --dark-card: #252A25;
+  --dark-border: #5A6B5A;
 }
 
-/* 紫羅蘭主題 */
-body.theme-violet {
-  --primary: #9B59B6;
-  --secondary: #D7BDE2;
-  --background: #FAF5FF;
-  --text: #2C3E50;
-  --highlight: #8E44AD;
-  --note: #EBDEF0;
-  --success: #27AE60;
-  --danger: #E74C3C;
-  --info: #3498DB;
+/* 蜜桃奶昔主題 - Peach Cream */
+body.theme-peach {
+  --primary: #F5C2B8;        /* 溫柔蜜桃 */
+  --secondary: #F8D7D0;      /* 淡桃粉 */
+  --background: #FFFAF9;     /* 桃花白 */
+  --text: #6B5A5A;           /* 溫和棕紅 */
+  --highlight: #F0A898;      /* 柔和桃 */
+  --note: #FDF0ED;           /* 淡桃霧 */
+  --success: #B8C8A8;        /* 溫和綠 */
+  --danger: #F5C2B8;         /* 蜜桃色 */
+  --info: #B8C8D8;           /* 淡藍粉 */
 }
 
-body.theme-violet.dark-mode {
-  --dark-bg: #1A0B1F;
-  --dark-text: #FFFFFF;
-  --dark-card: #2A1A35;
-  --dark-border: #44336B;
+body.theme-peach.dark-mode {
+  --dark-bg: #211A1A;
+  --dark-text: #FDF0ED;
+  --dark-card: #2F2525;
+  --dark-border: #6B5A5A;
+}
+
+/* 雲朵米色主題 - Cloud Beige */
+body.theme-cloud {
+  --primary: #D8C8B8;        /* 溫暖雲朵色 */
+  --secondary: #E8DDD0;      /* 淡米色 */
+  --background: #FAF8F5;     /* 雲白色 */
+  --text: #6B6055;           /* 溫和大地色 */
+  --highlight: #C8B8A8;      /* 柔和米棕 */
+  --note: #F0EBE5;           /* 淡雲霧 */
+  --success: #B8C8B8;        /* 溫和綠灰 */
+  --danger: #D8B8B8;         /* 溫和粉棕 */
+  --info: #B8C8D8;           /* 淡藍灰 */
+}
+
+body.theme-cloud.dark-mode {
+  --dark-bg: #1F1D1A;
+  --dark-text: #F0EBE5;
+  --dark-card: #2D2A25;
+  --dark-border: #6B6055;
+}
+
+/* ================================
+   溫柔主題專用視覺效果
+   ================================ */
+
+/* 為溫柔主題添加柔和陰影 */
+body.theme-milktea .note-card,
+body.theme-lavender .note-card,
+body.theme-matcha .note-card,
+body.theme-peach .note-card,
+body.theme-cloud .note-card {
+  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+  border: 1px solid rgba(255,255,255,0.8);
+}
+
+body.theme-milktea .note-card:hover,
+body.theme-lavender .note-card:hover,
+body.theme-matcha .note-card:hover,
+body.theme-peach .note-card:hover,
+body.theme-cloud .note-card:hover {
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+/* 溫柔主題的表單樣式 */
+body.theme-milktea .note-form,
+body.theme-lavender .note-form,
+body.theme-matcha .note-form,
+body.theme-peach .note-form,
+body.theme-cloud .note-form {
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+/* 溫柔主題的按鈕效果 */
+body.theme-milktea .btn,
+body.theme-lavender .btn,
+body.theme-matcha .btn,
+body.theme-peach .btn,
+body.theme-cloud .btn {
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* 溫柔主題的統計卡片 */
+body.theme-milktea .stat-card,
+body.theme-lavender .stat-card,
+body.theme-matcha .stat-card,
+body.theme-peach .stat-card,
+body.theme-cloud .stat-card {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.4);
+}
+
+/* 溫柔主題的標題裝飾 */
+body.theme-milktea header,
+body.theme-lavender header,
+body.theme-matcha header,
+body.theme-peach header,
+body.theme-cloud header {
+  position: relative;
+  overflow: hidden;
+}
+
+body.theme-milktea header::before,
+body.theme-lavender header::before,
+body.theme-matcha header::before,
+body.theme-peach header::before,
+body.theme-cloud header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  animation: gentle-float 20s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes gentle-float {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(10px, -10px) rotate(1deg); }
+  66% { transform: translate(-5px, 5px) rotate(-1deg); }
+}
+
+/* 溫柔主題的輸入框樣式 */
+body.theme-milktea .input,
+body.theme-milktea select,
+body.theme-milktea textarea,
+body.theme-lavender .input,
+body.theme-lavender select,
+body.theme-lavender textarea,
+body.theme-matcha .input,
+body.theme-matcha select,
+body.theme-matcha textarea,
+body.theme-peach .input,
+body.theme-peach select,
+body.theme-peach textarea,
+body.theme-cloud .input,
+body.theme-cloud select,
+body.theme-cloud textarea {
+  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(0,0,0,0.1);
+  backdrop-filter: blur(5px);
+}
+
+body.theme-milktea .input:focus,
+body.theme-milktea select:focus,
+body.theme-milktea textarea:focus,
+body.theme-lavender .input:focus,
+body.theme-lavender select:focus,
+body.theme-lavender textarea:focus,
+body.theme-matcha .input:focus,
+body.theme-matcha select:focus,
+body.theme-matcha textarea:focus,
+body.theme-peach .input:focus,
+body.theme-peach select:focus,
+body.theme-peach textarea:focus,
+body.theme-cloud .input:focus,
+body.theme-cloud select:focus,
+body.theme-cloud textarea:focus {
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 0 0 3px rgba(var(--primary), 0.1);
 }
 
 /* ================================
@@ -214,24 +361,29 @@ textarea {
   background: linear-gradient(135deg, #F8C8DC, #FFB3AB);
 }
 
-/* 海洋主題按鈕 */
-.theme-btn.ocean {
-  background: linear-gradient(135deg, #4A90E2, #7ED4F7);
+/* 奶茶拿鐵主題按鈕 */
+.theme-btn.milktea {
+  background: linear-gradient(135deg, #D4A574, #C8956D);
 }
 
-/* 森林主題按鈕 */
-.theme-btn.forest {
-  background: linear-gradient(135deg, #27AE60, #2ECC71);
+/* 薰衣草奶昔主題按鈕 */
+.theme-btn.lavender {
+  background: linear-gradient(135deg, #C8A8D8, #B695C0);
 }
 
-/* 日落主題按鈕 */
-.theme-btn.sunset {
-  background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+/* 抹茶奶霜主題按鈕 */
+.theme-btn.matcha {
+  background: linear-gradient(135deg, #A8C8A8, #94B894);
 }
 
-/* 紫羅蘭主題按鈕 */
-.theme-btn.violet {
-  background: linear-gradient(135deg, #9B59B6, #8E44AD);
+/* 蜜桃奶昔主題按鈕 */
+.theme-btn.peach {
+  background: linear-gradient(135deg, #F5C2B8, #F0A898);
+}
+
+/* 雲朵米色主題按鈕 */
+.theme-btn.cloud {
+  background: linear-gradient(135deg, #D8C8B8, #C8B8A8);
 }
 
 /* ================================
