@@ -1,2058 +1,292 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M 醬 探索日記 MED x CS x LIFE</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Hiragino Sans', 'ヒラギノ角ゴシック', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Yu Gothic', '游ゴシック', 'Meiryo', 'メイリオ', sans-serif;
-            transition: all 0.3s ease;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #F5E6D3 0%, #E8D5B7 50%, #D2B48C 100%);
-            color: #8B7355;
-            letter-spacing: 0.5px;
-        }
-
-        /* 深色模式樣式 - 深奶茶色調 */
-        body.dark {
-            background: linear-gradient(135deg, #6B5B47 0%, #5A4A37 50%, #4A3D2A 100%);
-            color: #E6D7C3;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 25px;
-            background: rgba(254, 249, 240, 0.95);
-            min-height: 100vh;
-            backdrop-filter: blur(15px);
-            border-radius: 0;
-            box-shadow: 0 8px 32px rgba(139, 115, 85, 0.1);
-            border: 1px solid rgba(232, 213, 183, 0.3);
-        }
-
-        body.dark .container {
-            background: rgba(75, 61, 42, 0.95);
-            color: #E6D7C3;
-            border-color: rgba(107, 91, 71, 0.3);
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 35px;
-            padding: 25px 0;
-            border-bottom: 2px solid #E8D5B7;
-            position: relative;
-        }
-
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #D2B48C, transparent);
-        }
-
-        body.dark .header {
-            border-bottom-color: #6B5B47;
-        }
-
-        body.dark .header::after {
-            background: linear-gradient(90deg, transparent, #8B7355, transparent);
-        }
-
-        .logo {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: #A0826D;
-            text-shadow: 0 2px 4px rgba(160, 130, 109, 0.1);
-            letter-spacing: 1px;
-        }
-
-        body.dark .logo {
-            color: #E6D7C3;
-            text-shadow: 0 2px 4px rgba(230, 215, 195, 0.1);
-        }
-
-        .subtitle {
-            font-size: 0.95rem;
-            color: #A0826D;
-            margin-top: 8px;
-            font-weight: 400;
-            opacity: 0.8;
-        }
-
-        body.dark .subtitle {
-            color: #D2B48C;
-        }
-
-        .theme-toggle {
-            background: none;
-            border: 2px solid #C8A882;
-            color: #A0826D;
-            padding: 12px 24px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-            font-weight: 500;
-            box-shadow: 0 2px 8px rgba(200, 168, 130, 0.2);
-        }
-
-        .theme-toggle:hover {
-            background: linear-gradient(135deg, #C8A882, #D2B48C);
-            color: #FDF8F0;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(200, 168, 130, 0.3);
-        }
-
-        body.dark .theme-toggle {
-            border-color: #D2B48C;
-            color: #E6D7C3;
-        }
-
-        body.dark .theme-toggle:hover {
-            background: linear-gradient(135deg, #D2B48C, #E6D7C3);
-            color: #4A3D2A;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 25px;
-            margin-bottom: 35px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #F5E6D3, #E8D5B7);
-            color: #8B7355;
-            padding: 25px;
-            border-radius: 18px;
-            text-align: center;
-            box-shadow: 0 6px 20px rgba(139, 115, 85, 0.15);
-            border: 1px solid rgba(232, 213, 183, 0.5);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #C8A882, #D2B48C, #E8D5B7);
-        }
-
-        body.dark .stat-card {
-            background: linear-gradient(135deg, #6B5B47, #5A4A37);
-            color: #E6D7C3;
-            border-color: rgba(107, 91, 71, 0.5);
-        }
-
-        body.dark .stat-card::before {
-            background: linear-gradient(90deg, #8B7355, #A0826D, #C8A882);
-        }
-
-        .stat-number {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #A0826D;
-        }
-
-        body.dark .stat-number {
-            color: #E6D7C3;
-        }
-
-        .stat-label {
-            font-size: 0.95rem;
-            opacity: 0.85;
-            font-weight: 500;
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 35px;
-            margin-bottom: 35px;
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .sidebar {
-            background: rgba(253, 248, 240, 0.8);
-            border-radius: 20px;
-            padding: 0;
-            height: fit-content;
-            box-shadow: 0 6px 20px rgba(139, 115, 85, 0.08);
-            border: 1px solid rgba(232, 213, 183, 0.3);
-            overflow: hidden;
-        }
-
-        body.dark .sidebar {
-            background: rgba(90, 74, 55, 0.8);
-            border-color: rgba(107, 91, 71, 0.3);
-        }
-
-        .profile-section {
-            background: linear-gradient(135deg, #F5E6D3, #E8D5B7);
-            padding: 25px;
-            text-align: center;
-            border-bottom: 1px solid rgba(232, 213, 183, 0.5);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .profile-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #C8A882, #D2B48C, #E8D5B7);
-        }
-
-        body.dark .profile-section {
-            background: linear-gradient(135deg, #6B5B47, #5A4A37);
-            border-bottom-color: rgba(107, 91, 71, 0.5);
-        }
-
-        body.dark .profile-section::before {
-            background: linear-gradient(90deg, #8B7355, #A0826D, #C8A882);
-        }
-
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            margin: 0 auto 15px;
-            background: linear-gradient(135deg, #C8A882, #D2B48C);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: #FDF8F0;
-            box-shadow: 0 4px 12px rgba(200, 168, 130, 0.3);
-            border: 3px solid rgba(253, 248, 240, 0.8);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .profile-avatar:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 18px rgba(200, 168, 130, 0.4);
-        }
-
-        .profile-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-
-        .profile-avatar-placeholder {
-            font-size: 1.8rem;
-            font-weight: 500;
-        }
-
-        body.dark .profile-avatar {
-            background: linear-gradient(135deg, #8B7355, #A0826D);
-            border-color: rgba(139, 115, 85, 0.8);
-        }
-
-        .profile-name {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #8B7355;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .profile-name:hover {
-            color: #A0826D;
-        }
-
-        body.dark .profile-name {
-            color: #E6D7C3;
-        }
-
-        body.dark .profile-name:hover {
-            color: #F5E6D3;
-        }
-
-        .profile-bio {
-            font-size: 0.9rem;
-            color: #A0826D;
-            line-height: 1.5;
-            font-weight: 400;
-            opacity: 0.9;
-            cursor: pointer;
-            transition: opacity 0.3s ease;
-        }
-
-        .profile-bio:hover {
-            opacity: 1;
-        }
-
-        body.dark .profile-bio {
-            color: #D2B48C;
-        }
-
-        .profile-edit-btn {
-            background: rgba(200, 168, 130, 0.2);
-            border: 1px solid rgba(200, 168, 130, 0.3);
-            color: #8B7355;
-            padding: 8px 16px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 12px;
-            font-weight: 500;
-        }
-
-        .profile-edit-btn:hover {
-            background: rgba(200, 168, 130, 0.3);
-            transform: translateY(-1px);
-        }
-
-        body.dark .profile-edit-btn {
-            background: rgba(139, 115, 85, 0.2);
-            border-color: rgba(139, 115, 85, 0.3);
-            color: #E6D7C3;
-        }
-
-        body.dark .profile-edit-btn:hover {
-            background: rgba(139, 115, 85, 0.3);
-        }
-
-        .categories-section {
-            padding: 25px;
-        }
-
-        .category-list {
-            list-style: none;
-        }
-
-        .category-item {
-            padding: 14px 18px;
-            margin: 8px 0;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 500;
-            color: #8B7355;
-            border: 1px solid transparent;
-        }
-
-        body.dark .category-item {
-            color: #D2B48C;
-        }
-
-        .category-item:hover {
-            background: rgba(200, 168, 130, 0.15);
-            transform: translateX(6px);
-            border-color: rgba(200, 168, 130, 0.3);
-        }
-
-        .category-item.active {
-            background: linear-gradient(135deg, #C8A882, #D2B48C);
-            color: #FDF8F0;
-            box-shadow: 0 4px 12px rgba(200, 168, 130, 0.3);
-        }
-
-        body.dark .category-item.active {
-            background: linear-gradient(135deg, #8B7355, #A0826D);
-            color: #FDF8F0;
-        }
-
-        .notes-area {
-            background: rgba(253, 248, 240, 0.8);
-            border-radius: 20px;
-            padding: 25px;
-            min-height: 450px;
-            box-shadow: 0 6px 20px rgba(139, 115, 85, 0.08);
-            border: 1px solid rgba(232, 213, 183, 0.3);
-        }
-
-        body.dark .notes-area {
-            background: rgba(90, 74, 55, 0.8);
-            border-color: rgba(107, 91, 71, 0.3);
-        }
-
-        .notes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
-            margin-top: 25px;
-        }
-
-        .note-card {
-            background: #FDF8F0;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 6px 20px rgba(139, 115, 85, 0.12);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 1px solid rgba(232, 213, 183, 0.4);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .note-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #C8A882, #D2B48C);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .note-card:hover::before {
-            opacity: 1;
-        }
-
-        body.dark .note-card {
-            background: #5A4A37;
-            color: #E6D7C3;
-            border-color: rgba(107, 91, 71, 0.4);
-        }
-
-        body.dark .note-card::before {
-            background: linear-gradient(90deg, #8B7355, #A0826D);
-        }
-
-        .note-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 30px rgba(139, 115, 85, 0.2);
-            border-color: rgba(200, 168, 130, 0.6);
-        }
-
-        .note-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: #8B7355;
-            line-height: 1.4;
-        }
-
-        body.dark .note-title {
-            color: #E6D7C3;
-        }
-
-        .note-content {
-            color: #A0826D;
-            line-height: 1.6;
-            margin-bottom: 18px;
-            font-weight: 400;
-        }
-
-        body.dark .note-content {
-            color: #D2B48C;
-        }
-
-        .note-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            color: #C8A882;
-        }
-
-        body.dark .note-meta {
-            color: #A0826D;
-        }
-
-        .note-category {
-            background: linear-gradient(135deg, #C8A882, #D2B48C);
-            color: #FDF8F0;
-            padding: 6px 12px;
-            border-radius: 14px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            box-shadow: 0 2px 6px rgba(200, 168, 130, 0.3);
-        }
-
-        body.dark .note-category {
-            background: linear-gradient(135deg, #8B7355, #A0826D);
-        }
-
-        .actions {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #C8A882, #D2B48C);
-            color: #FDF8F0;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(200, 168, 130, 0.3);
-            border: 1px solid rgba(232, 213, 183, 0.5);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(200, 168, 130, 0.4);
-            background: linear-gradient(135deg, #D2B48C, #E8D5B7);
-        }
-
-        .btn.secondary {
-            background: linear-gradient(135deg, #E8D5B7, #F5E6D3);
-            color: #8B7355;
-            box-shadow: 0 4px 12px rgba(139, 115, 85, 0.2);
-        }
-
-        .btn.secondary:hover {
-            background: linear-gradient(135deg, #F5E6D3, #FDF8F0);
-            box-shadow: 0 6px 18px rgba(139, 115, 85, 0.3);
-        }
-
-        body.dark .btn {
-            background: linear-gradient(135deg, #8B7355, #A0826D);
-            border-color: rgba(107, 91, 71, 0.5);
-        }
-
-        body.dark .btn:hover {
-            background: linear-gradient(135deg, #A0826D, #C8A882);
-        }
-
-        body.dark .btn.secondary {
-            background: linear-gradient(135deg, #6B5B47, #5A4A37);
-            color: #E6D7C3;
-        }
-
-        body.dark .btn.secondary:hover {
-            background: linear-gradient(135deg, #5A4A37, #4A3D2A);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 70px 25px;
-            color: #A0826D;
-        }
-
-        body.dark .empty-state {
-            color: #D2B48C;
-        }
-
-        .empty-state h3 {
-            font-size: 1.6rem;
-            margin-bottom: 12px;
-            font-weight: 600;
-        }
-
-        .empty-state p {
-            font-size: 1rem;
-            opacity: 0.8;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(139, 115, 85, 0.4);
-            z-index: 1000;
-            backdrop-filter: blur(8px);
-        }
-
-        .modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #FDF8F0;
-            border-radius: 20px;
-            padding: 35px;
-            width: 90%;
-            max-width: 650px;
-            max-height: 90%;
-            overflow-y: auto;
-            box-shadow: 0 12px 40px rgba(139, 115, 85, 0.2);
-            border: 1px solid rgba(232, 213, 183, 0.5);
-        }
-
-        body.dark .modal-content {
-            background: #5A4A37;
-            color: #E6D7C3;
-            border-color: rgba(107, 91, 71, 0.5);
-        }
-
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: #8B7355;
-            font-size: 0.95rem;
-        }
-
-        body.dark .form-group label {
-            color: #E6D7C3;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #E8D5B7;
-            border-radius: 12px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: #FDF8F0;
-            color: #8B7355;
-            font-family: inherit;
-        }
-
-        body.dark .form-group input,
-        body.dark .form-group select,
-        body.dark .form-group textarea {
-            background: #4A3D2A;
-            color: #E6D7C3;
-            border-color: #6B5B47;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #C8A882;
-            box-shadow: 0 0 0 3px rgba(200, 168, 130, 0.1);
-            background: #FEFBF7;
-        }
-
-        body.dark .form-group input:focus,
-        body.dark .form-group select:focus,
-        body.dark .form-group textarea:focus {
-            border-color: #A0826D;
-            box-shadow: 0 0 0 3px rgba(160, 130, 109, 0.1);
-            background: #3D2F1F;
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 130px;
-            line-height: 1.6;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: flex-end;
-            margin-top: 25px;
-        }
-
-        .close {
-            position: absolute;
-            top: 18px;
-            right: 25px;
-            font-size: 1.6rem;
-            cursor: pointer;
-            color: #A0826D;
-            transition: all 0.3s ease;
-        }
-
-        .close:hover {
-            color: #8B7355;
-            transform: scale(1.1);
-        }
-
-        body.dark .close {
-            color: #D2B48C;
-        }
-
-        body.dark .close:hover {
-            color: #E6D7C3;
-        }
-
-        .category-manage-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px;
-            margin: 12px 0;
-            background: #FDF8F0;
-            border-radius: 14px;
-            border: 2px solid #F5E6D3;
-            transition: all 0.3s ease;
-        }
-
-        body.dark .category-manage-item {
-            background: #4A3D2A;
-            border-color: #6B5B47;
-        }
-
-        .category-manage-item:hover {
-            border-color: #C8A882;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(200, 168, 130, 0.2);
-        }
-
-        .category-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .category-icon {
-            font-size: 1.6rem;
-        }
-
-        .category-details h4 {
-            margin: 0;
-            color: #8B7355;
-            font-size: 1.15rem;
-            font-weight: 600;
-        }
-
-        body.dark .category-details h4 {
-            color: #E6D7C3;
-        }
-
-        .category-details p {
-            margin: 0;
-            color: #A0826D;
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        body.dark .category-details p {
-            color: #D2B48C;
-        }
-
-        .category-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn-small {
-            padding: 10px 16px;
-            font-size: 0.85rem;
-            min-width: auto;
-        }
-
-        .btn.danger {
-            background: linear-gradient(135deg, #D4A574, #C19660);
-        }
-
-        .btn.danger:hover {
-            background: linear-gradient(135deg, #C19660, #B8864C);
-            box-shadow: 0 6px 18px rgba(196, 150, 96, 0.4);
-        }
-
-        body.dark .btn.danger {
-            background: linear-gradient(135deg, #8B6F47, #7A5E3A);
-        }
-
-        body.dark .btn.danger:hover {
-            background: linear-gradient(135deg, #7A5E3A, #6B4F2D);
-        }
-
-        .category-count {
-            background: linear-gradient(135deg, #C8A882, #D2B48C);
-            color: #FDF8F0;
-            padding: 5px 10px;
-            border-radius: 14px;
-            font-size: 0.75rem;
-            margin-left: 12px;
-            font-weight: 500;
-        }
-
-        body.dark .category-count {
-            background: linear-gradient(135deg, #8B7355, #A0826D);
-        }
-
-        .warning-text {
-            background: #FDF4E6;
-            color: #B8864C;
-            padding: 12px;
-            border-radius: 10px;
-            margin: 12px 0;
-            border: 1px solid #F0D9B8;
-            font-size: 0.9rem;
-        }
-
-        .modal-content h2,
-        .modal-content h3 {
-            color: #8B7355;
-            font-weight: 600;
-            margin-bottom: 20px;
-            font-size: 1.4rem;
-        }
-
-        body.dark .modal-content h2,
-        body.dark .modal-content h3 {
-            color: #E6D7C3;
-        }
-
-        .modal-content > div:first-of-type {
-            background: rgba(245, 230, 211, 0.5);
-            border: 1px solid rgba(232, 213, 183, 0.5);
-        }
-
-        .sidebar h3,
-        .notes-area h3,
-        .categories-section h3 {
-            color: #8B7355;
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 18px;
-        }
-
-        body.dark .sidebar h3,
-        body.dark .notes-area h3,
-        body.dark .categories-section h3 {
-            color: #E6D7C3;
-        }
-
-        /* 添加日本雜誌風格的裝飾性元素 */
-        .container::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #F5E6D3, #E8D5B7, #D2B48C, #C8A882, #A0826D);
-            z-index: 1001;
-        }
-
-        /* 增強日本雜誌風格的字體渲染 */
-        h1, h2, h3, h4, h5, h6 {
-            letter-spacing: 0.5px;
-        }
-
-        .title-section h1 {
-            text-shadow: 0 1px 3px rgba(139, 115, 85, 0.1);
-        }
-
-        /* 微妙的紙張質感 */
-        .container {
-            background-image: 
-                radial-gradient(circle at 1px 1px, rgba(139, 115, 85, 0.02) 1px, transparent 0);
-            background-size: 20px 20px;
-        }
-
-        /* 頭像選擇器樣式 */
-        .avatar-options {
-            margin: 20px 0;
-        }
-
-        .avatar-option-group {
-            margin-bottom: 25px;
-        }
-
-        .avatar-option-group h3 {
-            color: #8B7355;
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
-        body.dark .avatar-option-group h3 {
-            color: #E6D7C3;
-        }
-
-        .preset-avatars {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-            gap: 12px;
-            max-width: 100%;
-        }
-
-        .preset-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #F5E6D3, #E8D5B7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid rgba(232, 213, 183, 0.5);
-            font-weight: 500;
-            color: #8B7355;
-        }
-
-        .preset-avatar:hover {
-            transform: scale(1.1);
-            background: linear-gradient(135deg, #C8A882, #D2B48C);
-            color: #FDF8F0;
-            box-shadow: 0 4px 12px rgba(200, 168, 130, 0.3);
-        }
-
-        body.dark .preset-avatar {
-            background: linear-gradient(135deg, #6B5B47, #5A4A37);
-            border-color: rgba(107, 91, 71, 0.5);
-            color: #E6D7C3;
-        }
-
-        body.dark .preset-avatar:hover {
-            background: linear-gradient(135deg, #8B7355, #A0826D);
-            color: #FDF8F0;
-        }
-
-        /* 檔案上傳區域美化 */
-        .avatar-option-group p {
-            font-weight: 400;
-        }
-
-        body.dark .avatar-option-group p {
-            color: #D2B48C !important;
-        }
-
-        /* Toast 提示訊息動畫 */
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
-
-        /* 表單驗證樣式 */
-        .form-group input.error,
-        .form-group textarea.error {
-            border-color: #D4A574;
-            background-color: rgba(212, 165, 116, 0.1);
-        }
-
-        body.dark .form-group input.error,
-        body.dark .form-group textarea.error {
-            border-color: #C19660;
-            background-color: rgba(193, 150, 96, 0.1);
-        }
-
-        /* 載入狀態 */
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        /* 個人資料區塊動畫 */
-        .profile-section {
-            animation: profileFadeIn 0.5s ease-out;
-        }
-
-        @keyframes profileFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miruku 醫學筆記</title>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Kosugi+Maru&family=M+PLUS+Rounded+1c:wght@400;500;700&family=Sawarabi+Gothic&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;500;700&family=Quicksand:wght@400;500;700&family=Nunito:wght@400;500;700&family=Comfortaa:wght@400;500;700&family=Fredoka:wght@400;500;700&family=Varela+Round&family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/category-styles.css">
 </head>
-<body>
-    <div class="container">
-        <header class="header">
-            <div class="title-section">
-                <h1 class="logo">M 醬 探索日記 MED x CS x LIFE</h1>
-                <p class="subtitle">🌸 每天 0.1% 的前進 ✨</p>
-            </div>
-            <button class="theme-toggle" onclick="toggleTheme()">🌓 切換日夜模式</button>
-        </header>
+<body class="font-zen">
+  <div class="container">
+    <header>
+      <h1>M 醬 探索日記 MED x CS x LIFE</h1>
+      <p>🌸 每天 0.1% 的前進 ✨</p>
+      <div style="margin-bottom: 1rem;">
+        <button class="btn btn-dark-mode" onclick="toggleDarkMode()">🌓 切換日夜模式</button>
+      </div>
+      <!-- 主題選擇器會透過 JavaScript 動態新增到這裡 -->
+    </header>
 
-        <section class="stats">
-            <div class="stat-card">
-                <div class="stat-number" id="totalNotes">0</div>
-                <div class="stat-label">總筆記數</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="todayNotes">0</div>
-                <div class="stat-label">今日新增</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="favoriteSubject">-</div>
-                <div class="stat-label">最愛科目</div>
-            </div>
-        </section>
-
-        <section class="actions">
-            <button class="btn" onclick="openAddNoteModal()">✏️ 新增筆記</button>
-            <button class="btn secondary" onclick="importNotes()">📥 匯入筆記</button>
-            <button class="btn secondary" onclick="exportNotes()">📤 匯出筆記</button>
-            <button class="btn secondary" onclick="openCategoryModal()">🗂️ 管理類別</button>
-        </section>
-
-        <div class="main-content">
-            <aside class="sidebar">
-                <!-- 個人資料區塊 -->
-                <div class="profile-section">
-                    <div class="profile-avatar" onclick="changeAvatar()">
-                        <div class="profile-avatar-placeholder" id="avatarDisplay">M醬</div>
-                    </div>
-                    <div class="profile-name" onclick="openProfileModal()" id="profileName">M 醬</div>
-                    <div class="profile-bio" onclick="openProfileModal()" id="profileBio">醫學系學生 × 程式愛好者<br>每天進步 0.1% ✨</div>
-                    <button class="profile-edit-btn" onclick="openProfileModal()">✏️ 編輯個人資料</button>
-                </div>
-
-                <!-- 分類區塊 -->
-                <div class="categories-section">
-                    <h3 style="margin-bottom: 15px;">📚 分類</h3>
-                    <ul class="category-list" id="categoryList">
-                        <li class="category-item active" onclick="filterNotes('all')">📋 全部</li>
-                        <li class="category-item" onclick="filterNotes('anatomy')">🦴 解剖學</li>
-                        <li class="category-item" onclick="filterNotes('physiology')">❤️ 生理學</li>
-                        <li class="category-item" onclick="filterNotes('pharmacology')">💊 藥理學</li>
-                        <li class="category-item" onclick="filterNotes('clinical')">🏥 臨床醫學</li>
-                        <li class="category-item" onclick="filterNotes('pathology')">🔬 病理學</li>
-                        <li class="category-item" onclick="filterNotes('diagnosis')">🩺 診斷學</li>
-                        <li class="category-item" onclick="filterNotes('other')">📚 其他</li>
-                    </ul>
-                </div>
-            </aside>
-
-            <main class="notes-area">
-                <div id="notesContainer">
-                    <div class="empty-state">
-                        <h3>🌸 還沒有筆記喔！</h3>
-                        <p>開始記錄你的第一筆醫學筆記吧～</p>
-                    </div>
-                </div>
-            </main>
-        </div>
+    <div class="stats" id="statsContainer">
+      <div class="stat-card">
+        <div class="stat-number" id="totalNotes">0</div>
+        <div class="stat-label">總筆記數</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="todayNotes">0</div>
+        <div class="stat-label">今日新增</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="favoriteCategory">-</div>
+        <div class="stat-label">最愛科目</div>
+      </div>
     </div>
 
-    <!-- 新增筆記模態框 -->
-    <div id="addNoteModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('addNoteModal')">&times;</span>
-            <h2>✏️ 新增筆記</h2>
-            <form id="noteForm">
-                <div class="form-group">
-                    <label for="noteTitle">標題</label>
-                    <input type="text" id="noteTitle" required>
-                </div>
-                <div class="form-group">
-                    <label for="noteCategory">分類</label>
-                    <select id="noteCategory" required>
-                        <!-- 動態生成選項 -->
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="noteContent">內容</label>
-                    <textarea id="noteContent" required></textarea>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn secondary" onclick="closeModal('addNoteModal')">🔄 取消</button>
-                    <button type="submit" class="btn">📒 儲存筆記</button>
-                </div>
-            </form>
-        </div>
+    <div class="note-form">
+      <h2 style="margin-bottom: 1.5rem; color: var(--highlight);">✏️ 新增筆記</h2>
+      <input type="text" id="noteTitle" class="input" placeholder="輸入筆記標題...">
+      <textarea id="noteContent" class="input" placeholder="輸入筆記內容..."></textarea>
+      <select id="noteCategory">
+        <option value="解剖學">🦴 解剖學</option>
+        <option value="生理學">❤️ 生理學</option>
+        <option value="藥理學">💊 藥理學</option>
+        <option value="臨床醫學">🏥 臨床醫學</option>
+        <option value="病理學">🔬 病理學</option>
+        <option value="影像診斷學">🩺 診斷學</option>
+        <option value="其他">📚 其他</option>
+      </select>
+      <div class="form-actions">
+        <button class="btn" onclick="saveNote()">📒 儲存筆記</button>
+        <button class="btn btn-edit" onclick="clearForm()" id="clearBtn" style="display: none;">🔄 取消編輯</button>
+        <button class="btn btn-success" onclick="importNotes()">📥 匯入筆記</button>
+        <button class="btn btn-info" onclick="exportNotes()">📤 匯出筆記</button>
+        <button class="manage-categories-btn" id="manageCategoriesBtn">🗂️ 管理類別</button>
+      </div>
     </div>
 
-    <!-- 類別管理模態框 -->
-    <div id="categoryModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('categoryModal')">&times;</span>
-            <h2>🗂️ 管理類別</h2>
-            
-            <!-- 新增類別區塊 -->
-            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                <h3 style="margin-bottom: 15px;">➕ 新增類別</h3>
-                <form id="addCategoryForm">
-                    <div class="form-group">
-                        <label for="categoryKey">類別代碼</label>
-                        <input type="text" id="categoryKey" placeholder="例如: biochemistry" required pattern="[a-z_]+" title="只允許小寫字母和底線">
-                    </div>
-                    <div class="form-group">
-                        <label for="categoryIcon">圖示</label>
-                        <input type="text" id="categoryIcon" placeholder="例如: 🧬" required maxlength="2">
-                    </div>
-                    <div class="form-group">
-                        <label for="categoryName">名稱</label>
-                        <input type="text" id="categoryName" placeholder="例如: 生化學" required>
-                    </div>
-                    <button type="submit" class="btn">➕ 新增類別</button>
-                </form>
-            </div>
-
-            <!-- 現有類別列表 -->
-            <div>
-                <h3 style="margin-bottom: 15px;">📋 現有類別</h3>
-                <div id="categoryManageList">
-                    <!-- 動態生成類別列表 -->
-                </div>
-            </div>
-
-            <div class="modal-actions">
-                <button type="button" class="btn secondary" onclick="closeModal('categoryModal')">關閉</button>
-            </div>
-        </div>
+    <div class="search-section">
+      <input type="text" id="searchInput" class="input" placeholder="🔍 搜尋筆記..." onkeyup="searchNotes()">
+      <div class="filter-buttons" id="filterButtonsContainer">
+        <button class="btn btn-filter active" id="allCategoriesBtn">全部</button>
+      </div>
     </div>
 
-    <!-- 編輯個人資料模態框 -->
-    <div id="profileModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('profileModal')">&times;</span>
-            <h2>✏️ 編輯個人資料</h2>
-            <form id="profileForm">
-                <div class="form-group">
-                    <label for="profileNameInput">姓名/暱稱</label>
-                    <input type="text" id="profileNameInput" placeholder="請輸入您的姓名或暱稱">
-                </div>
-                <div class="form-group">
-                    <label for="profileBioInput">自我介紹</label>
-                    <textarea id="profileBioInput" placeholder="分享一些關於您的資訊..." rows="4"></textarea>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn secondary" onclick="closeModal('profileModal')">取消</button>
-                    <button type="submit" class="btn">💾 儲存資料</button>
-                </div>
-            </form>
-        </div>
+    <div class="notes-grid" id="notesContainer">
+      <div class="empty-state">
+        <h3>🌸 還沒有筆記喔！</h3>
+        <p>開始記錄你的第一筆醫學筆記吧～</p>
+      </div>
     </div>
-
-    <!-- 更換頭像模態框 -->
-    <div id="avatarModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('avatarModal')">&times;</span>
-            <h2>📸 更換頭像</h2>
-            
-            <div class="avatar-options">
-                <div class="avatar-option-group">
-                    <h3>🎨 選擇預設頭像</h3>
-                    <div class="preset-avatars">
-                        <div class="preset-avatar" onclick="selectPresetAvatar('M醬')">M醬</div>
-                        <div class="preset-avatar" onclick="selectPresetAvatar('🌸')">🌸</div>
-                        <div class="preset-avatar" onclick="selectPresetAvatar('📚')">📚</div>
-                        <div class="preset-avatar" onclick="selectPresetAvatar('🩺')">🩺</div>
-                        <div class="preset-avatar" onclick="selectPresetAvatar('💊')">💊</div>
-                        <div class="preset-avatar" onclick="selectPresetAvatar('🔬')">🔬</div>
-                        <div class="preset-avatar" onclick="selectPresetAvatar('❤️')">❤️</div>
-                        <div class="preset-avatar" onclick="selectPresetAvatar('🧠')">🧠</div>
-                    </div>
-                </div>
-                
-                <div class="avatar-option-group">
-                    <h3>📁 上傳圖片</h3>
-                    <input type="file" id="avatarUpload" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
-                    <button type="button" class="btn secondary" onclick="document.getElementById('avatarUpload').click()">
-                        📷 選擇圖片
-                    </button>
-                    <p style="font-size: 0.8rem; color: #A0826D; margin-top: 8px;">
-                        支援 JPG、PNG 格式，建議尺寸 400x400px
-                    </p>
-                </div>
-            </div>
-
-            <div class="modal-actions">
-                <button type="button" class="btn secondary" onclick="closeModal('avatarModal')">取消</button>
-            </div>
-        </div>
-    </div>
-    <div id="editCategoryModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('editCategoryModal')">&times;</span>
-            <h2>✏️ 編輯類別</h2>
-            <form id="editCategoryForm">
-                <div class="form-group">
-                    <label for="editCategoryKey">類別代碼</label>
-                    <input type="text" id="editCategoryKey" readonly style="background: #f0f0f0;">
-                </div>
-                <div class="form-group">
-                    <label for="editCategoryIcon">圖示</label>
-                    <input type="text" id="editCategoryIcon" required maxlength="2">
-                </div>
-                <div class="form-group">
-                    <label for="editCategoryName">名稱</label>
-                    <input type="text" id="editCategoryName" required>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn secondary" onclick="closeModal('editCategoryModal')">取消</button>
-                    <button type="submit" class="btn">💾 儲存變更</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- JavaScript -->
-    <script>
-        // 全域變量
-        let notes = [];
-        let currentFilter = 'all';
-        let userProfile = {
-            name: 'M 醬',
-            bio: '醫學系學生 × 程式愛好者<br>每天進步 0.1% ✨',
-            avatar: 'M醬',
-            avatarType: 'text' // 'text' 或 'image'
-        };
-
-        // 類別配置
-        const categories = {
-            anatomy: { name: '🦴 解剖學', icon: '🦴' },
-            physiology: { name: '❤️ 生理學', icon: '❤️' },
-            pharmacology: { name: '💊 藥理學', icon: '💊' },
-            clinical: { name: '🏥 臨床醫學', icon: '🏥' },
-            pathology: { name: '🔬 病理學', icon: '🔬' },
-            diagnosis: { name: '🩺 診斷學', icon: '🩺' },
-            other: { name: '📚 其他', icon: '📚' }
-        };
-
-        // NotesManager 類別
-        class NotesManager {
-            constructor() {
-                this.notes = this.loadNotes();
-            }
-
-            loadNotes() {
-                const saved = localStorage.getItem('miruku_notes');
-                return saved ? JSON.parse(saved) : [];
-            }
-
-            saveNotes() {
-                localStorage.setItem('miruku_notes', JSON.stringify(this.notes));
-                this.updateStats();
-                this.renderNotes();
-            }
-
-            addNote(noteData) {
-                const note = {
-                    id: Date.now(),
-                    title: noteData.title,
-                    content: noteData.content,
-                    category: noteData.category,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
-                };
-                this.notes.unshift(note);
-                this.saveNotes();
-                return note;
-            }
-
-            deleteNote(id) {
-                this.notes = this.notes.filter(note => note.id !== id);
-                this.saveNotes();
-            }
-
-            updateNote(id, noteData) {
-                const index = this.notes.findIndex(note => note.id === id);
-                if (index !== -1) {
-                    this.notes[index] = {
-                        ...this.notes[index],
-                        ...noteData,
-                        updatedAt: new Date().toISOString()
-                    };
-                    this.saveNotes();
-                }
-            }
-
-            getNotes(filter = 'all') {
-                if (filter === 'all') {
-                    return this.notes;
-                }
-                return this.notes.filter(note => note.category === filter);
-            }
-
-            updateStats() {
-                const totalNotes = this.notes.length;
-                const today = new Date().toDateString();
-                const todayNotes = this.notes.filter(note => 
-                    new Date(note.createdAt).toDateString() === today
-                ).length;
-
-                // 計算最愛科目
-                const categoryCount = {};
-                this.notes.forEach(note => {
-                    categoryCount[note.category] = (categoryCount[note.category] || 0) + 1;
-                });
-
-                let favoriteSubject = '-';
-                let maxCount = 0;
-                for (const [category, count] of Object.entries(categoryCount)) {
-                    if (count > maxCount) {
-                        maxCount = count;
-                        favoriteSubject = categoryManager ? 
-                            (categoryManager.categories[category]?.icon || category) : 
-                            (categories[category]?.icon || category);
-                    }
-                }
-
-                document.getElementById('totalNotes').textContent = totalNotes;
-                document.getElementById('todayNotes').textContent = todayNotes;
-                document.getElementById('favoriteSubject').textContent = favoriteSubject;
-            }
-
-            renderNotes() {
-                const container = document.getElementById('notesContainer');
-                const filteredNotes = this.getNotes(currentFilter);
-
-                if (filteredNotes.length === 0) {
-                    const categoryName = currentFilter === 'all' ? '' : 
-                        (categoryManager ? 
-                            (categoryManager.categories[currentFilter]?.name || currentFilter) : 
-                            (categories[currentFilter]?.name || currentFilter));
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <h3>🌸 還沒有筆記喔！</h3>
-                            <p>開始記錄你的第一筆${categoryName}筆記吧～</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                const notesHTML = filteredNotes.map(note => {
-                    const categoryName = categoryManager ? 
-                        (categoryManager.categories[note.category]?.name || note.category) :
-                        (categories[note.category]?.name || note.category);
-                    
-                    return `
-                        <div class="note-card" onclick="viewNote(${note.id})">
-                            <div class="note-title">${note.title}</div>
-                            <div class="note-content">${note.content.substring(0, 100)}${note.content.length > 100 ? '...' : ''}</div>
-                            <div class="note-meta">
-                                <span class="note-category">${categoryName}</span>
-                                <span>${new Date(note.createdAt).toLocaleDateString()}</span>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-
-                container.innerHTML = `<div class="notes-grid">${notesHTML}</div>`;
-            }
-        }
-
-        // CategoryManager 類別
-        class CategoryManager {
-            constructor() {
-                this.categories = this.loadCategories();
-            }
-
-            loadCategories() {
-                const saved = localStorage.getItem('miruku_categories');
-                return saved ? JSON.parse(saved) : categories;
-            }
-
-            saveCategories() {
-                localStorage.setItem('miruku_categories', JSON.stringify(this.categories));
-                this.updateCategoryList();
-                this.updateNoteFormCategories();
-            }
-
-            getCategories() {
-                return this.categories;
-            }
-
-            addCategory(key, data) {
-                if (this.categories[key]) {
-                    throw new Error('類別代碼已存在');
-                }
-                this.categories[key] = data;
-                this.saveCategories();
-            }
-
-            updateCategory(key, data) {
-                if (!this.categories[key]) {
-                    throw new Error('類別不存在');
-                }
-                this.categories[key] = data;
-                this.saveCategories();
-            }
-
-            removeCategory(key) {
-                if (!this.categories[key]) {
-                    throw new Error('類別不存在');
-                }
-                
-                // 檢查是否有筆記使用此類別
-                const notesWithCategory = notesManager.notes.filter(note => note.category === key);
-                if (notesWithCategory.length > 0) {
-                    if (!confirm(`此類別有 ${notesWithCategory.length} 筆筆記，刪除後這些筆記將移至「其他」分類。確定要刪除嗎？`)) {
-                        return false;
-                    }
-                    
-                    // 將筆記移至 "other" 類別
-                    notesWithCategory.forEach(note => {
-                        notesManager.updateNote(note.id, { category: 'other' });
-                    });
-                }
-                
-                delete this.categories[key];
-                this.saveCategories();
-                
-                // 如果當前篩選的是被刪除的類別，則切換到全部
-                if (currentFilter === key) {
-                    filterNotes('all');
-                }
-                
-                return true;
-            }
-
-            getCategoryCount(key) {
-                return notesManager.notes.filter(note => note.category === key).length;
-            }
-
-            updateCategoryList() {
-                this.renderCategoryList();
-            }
-
-            renderCategoryList() {
-                const categoryList = document.getElementById('categoryList');
-                let html = '<li class="category-item active" onclick="filterNotes(\'all\')">📋 全部</li>';
-                
-                for (const [key, category] of Object.entries(this.categories)) {
-                    const isActive = currentFilter === key ? 'active' : '';
-                    html += `<li class="category-item ${isActive}" onclick="filterNotes('${key}')">${category.name}</li>`;
-                }
-                
-                categoryList.innerHTML = html;
-            }
-
-            updateNoteFormCategories() {
-                const select = document.getElementById('noteCategory');
-                if (select) {
-                    let html = '';
-                    for (const [key, category] of Object.entries(this.categories)) {
-                        html += `<option value="${key}">${category.name}</option>`;
-                    }
-                    select.innerHTML = html;
-                }
-            }
-
-            renderCategoryManageList() {
-                const container = document.getElementById('categoryManageList');
-                let html = '';
-                
-                for (const [key, category] of Object.entries(this.categories)) {
-                    const count = this.getCategoryCount(key);
-                    html += `
-                        <div class="category-manage-item">
-                            <div class="category-info">
-                                <span class="category-icon">${category.icon}</span>
-                                <div class="category-details">
-                                    <h4>${category.name}
-                                        <span class="category-count">${count} 筆記</span>
-                                    </h4>
-                                    <p>代碼: ${key}</p>
-                                </div>
-                            </div>
-                            <div class="category-actions">
-                                <button class="btn btn-small" onclick="editCategory('${key}')">✏️ 編輯</button>
-                                <button class="btn btn-small danger" onclick="deleteCategory('${key}')">🗑️ 刪除</button>
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                container.innerHTML = html;
-            }
-        }
-
-        // CategoryUI 類別
-        class CategoryUI {
-            constructor(categoryManager) {
-                this.categoryManager = categoryManager;
-            }
-
-            openCategoryModal() {
-                this.categoryManager.renderCategoryManageList();
-                document.getElementById('categoryModal').style.display = 'block';
-            }
-
-            updateCategoryDisplay() {
-                this.categoryManager.renderCategoryList();
-                this.categoryManager.updateNoteFormCategories();
-            }
-        }
-
-        // 初始化應用程式
-        let notesManager, categoryManager, categoryUI;
-
-        function initializeMirukuApp() {
-            console.log('初始化 Miruku 應用程式...');
-            
-            try {
-                notesManager = new NotesManager();
-                categoryManager = new CategoryManager();
-                categoryUI = new CategoryUI(categoryManager);
-                
-                // 載入個人資料（在界面元素確保存在後）
-                console.log('載入個人資料...');
-                loadUserProfile();
-                
-                // 初始化界面
-                console.log('初始化界面...');
-                categoryManager.renderCategoryList();
-                categoryManager.updateNoteFormCategories();
-                notesManager.updateStats();
-                notesManager.renderNotes();
-                
-                // 確保個人資料正確顯示
-                setTimeout(() => {
-                    updateProfileDisplay();
-                    console.log('個人資料顯示確認完成');
-                }, 200);
-                
-                console.log('Miruku 應用程式初始化完成！');
-            } catch (error) {
-                console.error('應用程式初始化失敗:', error);
-            }
-        }
-
-        // 主題切換
-        function toggleTheme() {
-            document.body.classList.toggle('dark');
-            const theme = document.body.classList.contains('dark') ? 'dark' : 'light';
-            localStorage.setItem('miruku_theme', theme);
-        }
-
-        // 載入儲存的主題
-        function loadTheme() {
-            const savedTheme = localStorage.getItem('miruku_theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark');
-            }
-        }
-
-        // 筆記相關功能
-        function openAddNoteModal() {
-            document.getElementById('addNoteModal').style.display = 'block';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-            if (modalId === 'addNoteModal') {
-                document.getElementById('noteForm').reset();
-            } else if (modalId === 'categoryModal') {
-                document.getElementById('addCategoryForm').reset();
-            } else if (modalId === 'editCategoryModal') {
-                document.getElementById('editCategoryForm').reset();
-            } else if (modalId === 'profileModal') {
-                document.getElementById('profileForm').reset();
-            }
-        }
-
-        function filterNotes(category) {
-            currentFilter = category;
-            
-            // 更新類別選擇狀態
-            document.querySelectorAll('.category-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            event.target.classList.add('active');
-            
-            notesManager.renderNotes();
-        }
-
-        function viewNote(id) {
-            const note = notesManager.notes.find(n => n.id === id);
-            if (note) {
-                const categoryName = categoryManager ? 
-                    (categoryManager.categories[note.category]?.name || note.category) :
-                    (categories[note.category]?.name || note.category);
-                
-                alert(`標題: ${note.title}\n\n內容: ${note.content}\n\n分類: ${categoryName}\n\n建立時間: ${new Date(note.createdAt).toLocaleString()}`);
-            }
-        }
-
-        function importNotes() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        try {
-                            const importedNotes = JSON.parse(e.target.result);
-                            notesManager.notes = [...notesManager.notes, ...importedNotes];
-                            notesManager.saveNotes();
-                            alert('筆記匯入成功！');
-                        } catch (error) {
-                            alert('匯入失敗：檔案格式錯誤');
-                        }
-                    };
-                    reader.readAsText(file);
-                }
-            };
-            input.click();
-        }
-
-        function exportNotes() {
-            const dataStr = JSON.stringify(notesManager.notes, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `miruku_notes_${new Date().toISOString().split('T')[0]}.json`;
-            link.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function openCategoryModal() {
-            categoryUI.openCategoryModal();
-        }
-
-        // 個人資料管理功能
-        function loadUserProfile() {
-            const saved = localStorage.getItem('miruku_profile');
-            if (saved) {
-                try {
-                    const loadedProfile = JSON.parse(saved);
-                    userProfile = { ...userProfile, ...loadedProfile };
-                    console.log('已載入個人資料:', userProfile);
-                } catch (error) {
-                    console.error('載入個人資料失敗:', error);
-                }
-            }
-            // 確保界面更新
-            setTimeout(updateProfileDisplay, 100);
-        }
-
-        function saveUserProfile() {
-            try {
-                localStorage.setItem('miruku_profile', JSON.stringify(userProfile));
-                console.log('個人資料已儲存:', userProfile);
-                // 立即更新界面
-                updateProfileDisplay();
-                // 觸發自定義事件通知其他組件
-                window.dispatchEvent(new CustomEvent('profileUpdated', { detail: userProfile }));
-            } catch (error) {
-                console.error('儲存個人資料失敗:', error);
-                alert('儲存失敗，請重試');
-            }
-        }
-
-        function updateProfileDisplay() {
-            try {
-                const profileNameEl = document.getElementById('profileName');
-                const profileBioEl = document.getElementById('profileBio');
-                const avatarDisplayEl = document.getElementById('avatarDisplay');
-                
-                if (profileNameEl) {
-                    profileNameEl.textContent = userProfile.name || 'M 醬';
-                }
-                
-                if (profileBioEl) {
-                    profileBioEl.innerHTML = userProfile.bio || '醫學系學生 × 程式愛好者<br>每天進步 0.1% ✨';
-                }
-                
-                if (avatarDisplayEl) {
-                    if (userProfile.avatarType === 'image' && userProfile.avatar) {
-                        avatarDisplayEl.innerHTML = `<img src="${userProfile.avatar}" alt="頭像">`;
-                    } else {
-                        const avatarText = userProfile.avatar || 'M醬';
-                        avatarDisplayEl.innerHTML = `<div class="profile-avatar-placeholder">${avatarText}</div>`;
-                    }
-                }
-                
-                console.log('個人資料界面已更新');
-            } catch (error) {
-                console.error('更新個人資料界面失敗:', error);
-            }
-        }
-
-        function openProfileModal() {
-            try {
-                const profileNameInput = document.getElementById('profileNameInput');
-                const profileBioInput = document.getElementById('profileBioInput');
-                
-                if (profileNameInput) {
-                    profileNameInput.value = userProfile.name || '';
-                }
-                
-                if (profileBioInput) {
-                    // 將 HTML 的 <br> 轉換為換行符
-                    const bioText = (userProfile.bio || '').replace(/<br\s*\/?>/gi, '\n');
-                    profileBioInput.value = bioText;
-                }
-                
-                document.getElementById('profileModal').style.display = 'block';
-            } catch (error) {
-                console.error('開啟個人資料編輯失敗:', error);
-            }
-        }
-
-        function changeAvatar() {
-            document.getElementById('avatarModal').style.display = 'block';
-        }
-
-        function selectPresetAvatar(avatar) {
-            try {
-                userProfile.avatar = avatar;
-                userProfile.avatarType = 'text';
-                handleProfileUpdate(); // 使用新的同步機制
-                closeModal('avatarModal');
-                
-                // 顯示成功訊息
-                showToast('頭像已更新！');
-            } catch (error) {
-                console.error('更新頭像失敗:', error);
-                alert('更新頭像失敗，請重試');
-            }
-        }
-
-        function handleAvatarUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                if (file.size > 2 * 1024 * 1024) { // 2MB 限制
-                    alert('圖片大小不能超過 2MB');
-                    return;
-                }
-                
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        userProfile.avatar = e.target.result;
-                        userProfile.avatarType = 'image';
-                        handleProfileUpdate(); // 使用新的同步機制
-                        closeModal('avatarModal');
-                        
-                        // 顯示成功訊息
-                        showToast('頭像已上傳！');
-                    } catch (error) {
-                        console.error('上傳頭像失敗:', error);
-                        alert('上傳頭像失敗，請重試');
-                    }
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // 簡單的提示訊息功能
-        function showToast(message) {
-            // 創建提示元素
-            const toast = document.createElement('div');
-            toast.textContent = message;
-            toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: linear-gradient(135deg, #C8A882, #D2B48C);
-                color: #FDF8F0;
-                padding: 12px 20px;
-                border-radius: 25px;
-                font-size: 0.9rem;
-                font-weight: 500;
-                box-shadow: 0 4px 12px rgba(200, 168, 130, 0.3);
-                z-index: 10000;
-                animation: slideIn 0.3s ease;
-                font-family: 'Zen Maru Gothic', sans-serif;
-            `;
-            
-            document.body.appendChild(toast);
-            
-            // 3秒後移除
-            setTimeout(() => {
-                toast.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => {
-                    if (toast.parentNode) {
-                        toast.parentNode.removeChild(toast);
-                    }
-                }, 300);
-            }, 3000);
-        }
-
-        // 強制同步個人資料到界面的函數
-        function forceProfileSync() {
-            console.log('強制同步個人資料...');
-            
-            // 重新載入資料
-            loadUserProfile();
-            
-            // 多次嘗試更新界面，確保成功
-            let attempts = 0;
-            const maxAttempts = 5;
-            
-            const syncInterval = setInterval(() => {
-                attempts++;
-                updateProfileDisplay();
-                
-                // 檢查是否成功更新
-                const profileNameEl = document.getElementById('profileName');
-                const currentDisplayName = profileNameEl ? profileNameEl.textContent : '';
-                
-                if (currentDisplayName === userProfile.name || attempts >= maxAttempts) {
-                    clearInterval(syncInterval);
-                    if (attempts >= maxAttempts && currentDisplayName !== userProfile.name) {
-                        console.warn('個人資料同步可能失敗');
-                        showToast('界面更新可能有延遲，請重新整理頁面');
-                    } else {
-                        console.log('個人資料同步成功');
-                    }
-                }
-            }, 100);
-        }
-
-        // 在關鍵操作後調用同步函數
-        function handleProfileUpdate() {
-            saveUserProfile();
-            forceProfileSync();
-        }
-        function editCategory(key) {
-            const category = categoryManager.categories[key];
-            if (!category) return;
-            
-            document.getElementById('editCategoryKey').value = key;
-            document.getElementById('editCategoryIcon').value = category.icon;
-            document.getElementById('editCategoryName').value = category.name.replace(/^[^\s]+\s/, ''); // 移除前面的 emoji
-            
-            document.getElementById('editCategoryModal').style.display = 'block';
-        }
-
-        function deleteCategory(key) {
-            const category = categoryManager.categories[key];
-            if (!category) return;
-            
-            if (confirm(`確定要刪除「${category.name}」類別嗎？`)) {
-                try {
-                    if (categoryManager.removeCategory(key)) {
-                        alert('類別已成功刪除！');
-                        categoryManager.renderCategoryManageList();
-                    }
-                } catch (error) {
-                    alert('刪除失敗：' + error.message);
-                }
-            }
-        }
-
-        // 表單提交處理
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('頁面載入完成，開始初始化...');
-            
-            loadTheme();
-            
-            // 確保 DOM 完全準備好後再初始化
-            setTimeout(() => {
-                console.log('開始初始化應用程式...');
-                initializeMirukuApp();
-                
-                // 驗證初始化結果
-                setTimeout(() => {
-                    const profileName = document.getElementById('profileName');
-                    const profileBio = document.getElementById('profileBio');
-                    const avatarDisplay = document.getElementById('avatarDisplay');
-                    
-                    console.log('驗證個人資料元素:');
-                    console.log('- 姓名元素:', profileName ? '✓' : '✗');
-                    console.log('- 自我介紹元素:', profileBio ? '✓' : '✗');
-                    console.log('- 頭像元素:', avatarDisplay ? '✓' : '✗');
-                    console.log('- 當前個人資料:', userProfile);
-                }, 300);
-            }, 100);
-
-            // 筆記表單提交
-            document.getElementById('noteForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const noteData = {
-                    title: document.getElementById('noteTitle').value,
-                    category: document.getElementById('noteCategory').value,
-                    content: document.getElementById('noteContent').value
-                };
-
-                notesManager.addNote(noteData);
-                closeModal('addNoteModal');
-                
-                alert('筆記已成功儲存！');
-            });
-
-            // 新增類別表單提交
-            document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const key = document.getElementById('categoryKey').value;
-                const icon = document.getElementById('categoryIcon').value;
-                const name = document.getElementById('categoryName').value;
-                
-                try {
-                    categoryManager.addCategory(key, {
-                        name: `${icon} ${name}`,
-                        icon: icon
-                    });
-                    
-                    alert('類別已成功新增！');
-                    document.getElementById('addCategoryForm').reset();
-                    categoryManager.renderCategoryManageList();
-                } catch (error) {
-                    alert('新增失敗：' + error.message);
-                }
-            });
-
-            // 編輯類別表單提交
-            document.getElementById('editCategoryForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const key = document.getElementById('editCategoryKey').value;
-                const icon = document.getElementById('editCategoryIcon').value;
-                const name = document.getElementById('editCategoryName').value;
-                
-                try {
-                    categoryManager.updateCategory(key, {
-                        name: `${icon} ${name}`,
-                        icon: icon
-                    });
-                    
-                    alert('類別已成功更新！');
-                    closeModal('editCategoryModal');
-                    categoryManager.renderCategoryManageList();
-                } catch (error) {
-                    alert('更新失敗：' + error.message);
-                }
-            });
-
-            // 個人資料表單提交
-            document.getElementById('profileForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                try {
-                    const nameInput = document.getElementById('profileNameInput');
-                    const bioInput = document.getElementById('profileBioInput');
-                    
-                    // 表單驗證
-                    let isValid = true;
-                    
-                    // 移除之前的錯誤樣式
-                    nameInput.classList.remove('error');
-                    bioInput.classList.remove('error');
-                    
-                    const newName = nameInput.value.trim();
-                    const newBio = bioInput.value.trim();
-                    
-                    if (!newName) {
-                        nameInput.classList.add('error');
-                        isValid = false;
-                        showToast('請輸入姓名或暱稱');
-                        return;
-                    }
-                    
-                    if (newName.length > 20) {
-                        nameInput.classList.add('error');
-                        isValid = false;
-                        showToast('姓名不能超過 20 個字元');
-                        return;
-                    }
-                    
-                    if (newBio.length > 200) {
-                        bioInput.classList.add('error');
-                        isValid = false;
-                        showToast('自我介紹不能超過 200 個字元');
-                        return;
-                    }
-                    
-                    if (isValid) {
-                        // 更新個人資料
-                        userProfile.name = newName;
-                        userProfile.bio = newBio.replace(/\n/g, '<br>') || '醫學系學生 × 程式愛好者<br>每天進步 0.1% ✨';
-                        
-                        // 使用新的同步機制
-                        handleProfileUpdate();
-                        closeModal('profileModal');
-                        
-                        showToast('個人資料已成功更新！');
-                        
-                        console.log('個人資料更新完成:', userProfile);
-                    }
-                } catch (error) {
-                    console.error('更新個人資料失敗:', error);
-                    showToast('更新失敗，請重試');
-                }
-            });
-
-            // 監聽個人資料更新事件
-            window.addEventListener('profileUpdated', function(e) {
-                console.log('接收到個人資料更新事件:', e.detail);
-                // 可以在這裡添加其他需要同步更新的功能
-            });
-
-            // 添加調試模式支援（按 Ctrl+Shift+D 啟用）
-            document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey && e.shiftKey && e.key === 'D') {
-                    console.log('=== 調試模式 ===');
-                    console.log('當前個人資料:', userProfile);
-                    console.log('本地儲存:', localStorage.getItem('miruku_profile'));
-                    forceProfileSync();
-                    showToast('已觸發強制同步！');
-                }
-            });
-
-            // 表單輸入時移除錯誤樣式
-            document.getElementById('profileNameInput').addEventListener('input', function() {
-                this.classList.remove('error');
-            });
-            
-            document.getElementById('profileBioInput').addEventListener('input', function() {
-                this.classList.remove('error');
-            });
-
-            // 點擊模態框外部關閉
-            window.addEventListener('click', function(e) {
-                if (e.target.classList.contains('modal')) {
-                    e.target.style.display = 'none';
-                }
-            });
+  </div>
+
+  <footer>
+    © 2025 Miruku Notes | M醬的探索之旅 📖💗
+  </footer>
+
+  <!-- 隱藏的檔案上傳輸入 -->
+  <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="handleFileUpload(event)">
+
+  <!-- JavaScript 載入順序很重要 -->
+  <script src="js/notes.js"></script>
+  <script src="js/categories.js"></script>
+  <script src="js/category-ui.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    // 等待頁面完全載入
+    window.addEventListener('load', function() {
+      console.log('頁面載入完成，開始初始化...');
+      
+      // 延遲執行以確保所有腳本都已載入
+      setTimeout(function() {
+        initializeMirukuApp();
+      }, 200);
+    });
+
+    // 主初始化函數
+    function initializeMirukuApp() {
+      console.log('開始初始化 Miruku 應用程式...');
+      
+      try {
+        // 檢查必要的類別是否已載入
+        const requiredClasses = [
+          { name: 'CategoryManager', file: 'categories.js' },
+          { name: 'CategoryUI', file: 'category-ui.js' },
+          { name: 'NotesManager', file: 'notes.js' }
+        ];
+        
+        const missingClasses = [];
+        
+        requiredClasses.forEach(function(cls) {
+          if (typeof window[cls.name] === 'undefined') {
+            missingClasses.push(cls.name + ' (檢查 js/' + cls.file + ')');
+          }
         });
-
-        console.log('UI 管理器初始化完成');
-    </script>
+        
+        if (missingClasses.length > 0) {
+          console.error('缺少必要的類別:', missingClasses);
+          alert('缺少必要的檔案:\n' + missingClasses.join('\n') + '\n\n請確保所有 JavaScript 檔案都已正確上傳到 GitHub。');
+          return;
+        }
+        
+        // 初始化組件
+        if (typeof window.categoryManager === 'undefined') {
+          window.categoryManager = new CategoryManager();
+          window.categoryManager.initialize();
+          console.log('✓ CategoryManager 初始化完成');
+        }
+        
+        if (typeof window.categoryUI === 'undefined') {
+          window.categoryUI = new CategoryUI();
+          window.categoryUI.initialize();
+          console.log('✓ CategoryUI 初始化完成');
+        }
+        
+        if (typeof window.notesManager === 'undefined') {
+          window.notesManager = new NotesManager();
+          window.notesManager.initialize();
+          console.log('✓ NotesManager 初始化完成');
+        }
+        
+        // 初始化主應用程式
+        if (typeof initializeApp === 'function') {
+          initializeApp();
+        }
+        
+        // 綁定事件
+        bindCustomEvents();
+        
+        // 更新UI
+        updateCategoryUI();
+        
+        console.log('🎉 Miruku 應用程式初始化完成！');
+        
+      } catch (error) {
+        console.error('初始化失敗:', error);
+        alert('應用程式初始化失敗: ' + error.message);
+      }
+    }
+    
+    // 綁定自訂事件
+    function bindCustomEvents() {
+      console.log('綁定自訂事件...');
+      
+      // 管理類別按鈕
+      const manageCategoriesBtn = document.getElementById('manageCategoriesBtn');
+      if (manageCategoriesBtn) {
+        manageCategoriesBtn.addEventListener('click', function() {
+          if (window.categoryUI && typeof window.categoryUI.openModal === 'function') {
+            window.categoryUI.openModal();
+          } else {
+            alert('類別管理功能尚未載入，請稍後再試。');
+          }
+        });
+      }
+      
+      // 全部類別按鈕
+      const allCategoriesBtn = document.getElementById('allCategoriesBtn');
+      if (allCategoriesBtn) {
+        allCategoriesBtn.addEventListener('click', function() {
+          filterByCategory('all');
+        });
+      }
+    }
+    
+    // 安全的篩選函數
+    function filterByCategory(category) {
+      console.log('篩選類別:', category);
+      
+      if (window.notesManager && typeof window.notesManager.filterByCategory === 'function') {
+        window.notesManager.filterByCategory(category);
+        
+        if (typeof renderNotes === 'function') {
+          renderNotes();
+        }
+        
+        // 更新按鈕狀態
+        updateFilterButtonsState(category);
+      } else {
+        console.error('NotesManager 未正確初始化或不存在 filterByCategory 方法');
+      }
+    }
+    
+    // 更新篩選按鈕狀態
+    function updateFilterButtonsState(activeCategory) {
+      const buttons = document.querySelectorAll('.btn-filter');
+      buttons.forEach(function(btn) {
+        btn.classList.remove('active');
+        
+        if (activeCategory === 'all' && btn.id === 'allCategoriesBtn') {
+          btn.classList.add('active');
+        } else if (btn.getAttribute('data-category') === activeCategory) {
+          btn.classList.add('active');
+        }
+      });
+    }
+    
+    // 更新類別UI
+    function updateCategoryUI() {
+      console.log('更新類別UI...');
+      
+      if (!window.categoryManager) {
+        console.warn('CategoryManager 不存在，跳過UI更新');
+        return;
+      }
+      
+      try {
+        // 更新類別選單
+        window.categoryManager.updateCategorySelect();
+        
+        // 更新篩選按鈕
+        updateFilterButtons();
+        
+      } catch (error) {
+        console.error('更新類別UI時發生錯誤:', error);
+      }
+    }
+    
+    // 動態更新篩選按鈕
+    function updateFilterButtons() {
+      const container = document.getElementById('filterButtonsContainer');
+      if (!container || !window.categoryManager) {
+        return;
+      }
+      
+      try {
+        // 清空容器但保留"全部"按鈕
+        const allBtn = document.getElementById('allCategoriesBtn');
+        container.innerHTML = '';
+        if (allBtn) {
+          container.appendChild(allBtn);
+        } else {
+          // 重新創建"全部"按鈕
+          const newAllBtn = document.createElement('button');
+          newAllBtn.className = 'btn btn-filter active';
+          newAllBtn.id = 'allCategoriesBtn';
+          newAllBtn.textContent = '全部';
+          newAllBtn.addEventListener('click', function() {
+            filterByCategory('all');
+          });
+          container.appendChild(newAllBtn);
+        }
+        
+        // 添加類別按鈕
+        const categories = window.categoryManager.getAllCategories();
+        categories.forEach(function(category) {
+          const button = document.createElement('button');
+          button.className = 'btn btn-filter';
+          button.innerHTML = category.icon + ' ' + category.name;
+          button.setAttribute('data-category', category.name);
+          button.addEventListener('click', function() {
+            filterByCategory(category.name);
+          });
+          container.appendChild(button);
+        });
+        
+        console.log('篩選按鈕已更新，共 ' + (categories.length + 1) + ' 個按鈕');
+        
+      } catch (error) {
+        console.error('更新篩選按鈕時發生錯誤:', error);
+      }
+    }
+    
+    // 全域函數，供其他腳本使用
+    window.filterByCategory = filterByCategory;
+    window.updateFilterButtons = updateFilterButtons;
+    window.updateCategoryUI = updateCategoryUI;
+  </script>
 </body>
 </html>
