@@ -40,6 +40,7 @@
       <input type="text" id="noteTitle" class="input" placeholder="輸入筆記標題...">
       <textarea id="noteContent" class="input" placeholder="輸入筆記內容..."></textarea>
       <select id="noteCategory">
+        <!-- 類別選項會透過 JavaScript 動態生成 -->
         <option value="解剖學">🦴 解剖學</option>
         <option value="生理學">❤️ 生理學</option>
         <option value="藥理學">💊 藥理學</option>
@@ -53,19 +54,15 @@
         <button class="btn btn-edit" onclick="clearForm()" id="clearBtn" style="display: none;">🔄 取消編輯</button>
         <button class="btn btn-success" onclick="importNotes()">📥 匯入筆記</button>
         <button class="btn btn-info" onclick="exportNotes()">📤 匯出筆記</button>
-        <button class="manage-categories-btn" onclick="categoryUI.openModal()">🗂️ 管理類別</button>
+        <button class="manage-categories-btn" onclick="openCategoryManager()">🗂️ 管理類別</button>
       </div>
     </div>
 
     <div class="search-section">
       <input type="text" id="searchInput" class="input" placeholder="🔍 搜尋筆記..." onkeyup="searchNotes()">
-      <div class="filter-buttons">
-        <!-- 篩選按鈕會動態生成 -->
+      <div class="filter-buttons" id="filterButtonsContainer">
+        <!-- 篩選按鈕會透過 JavaScript 動態生成 -->
         <button class="btn btn-filter active" onclick="filterByCategory('all')">全部</button>
-        <button class="btn btn-filter" onclick="filterByCategory('解剖學')">🦴 解剖學</button>
-        <button class="btn btn-filter" onclick="filterByCategory('生理學')">❤️ 生理學</button>
-        <button class="btn btn-filter" onclick="filterByCategory('藥理學')">💊 藥理學</button>
-        <button class="btn btn-filter" onclick="filterByCategory('臨床醫學')">🏥 臨床醫學</button>
       </div>
     </div>
 
@@ -91,32 +88,189 @@
   <script src="js/app.js"></script>
   <script src="js/ui.js"></script>
   <script>
-    // 初始化應用程式
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('DOM 載入完成，開始初始化...');
-      
-      // 確保所有必要的類別都已定義
-      if (typeof CategoryManager === 'undefined') {
-        console.error('CategoryManager 未定義！請檢查 categories.js 是否正確載入。');
+    // 全域變數聲明
+    let categoryManager = null;
+    let categoryUI = null;
+    let notesManager = null;
+    let uiManager = null;
+
+    // 安全的類別管理器開啟函數
+    function openCategoryManager() {
+      console.log('嘗試開啟類別管理器...');
+      if (categoryUI && typeof categoryUI.openModal === 'function') {
+        categoryUI.openModal();
+      } else {
+        console.error('CategoryUI 未正確初始化');
+        alert('類別管理功能尚未載入，請稍等片刻後再試，或重新整理頁面。');
+      }
+    }
+
+    // 安全的篩選函數
+    function filterByCategory(category) {
+      console.log('篩選類別:', category);
+      if (notesManager && typeof notesManager.filterByCategory === 'function') {
+        notesManager.filterByCategory(category);
+        if (typeof renderNotes === 'function') {
+          renderNotes();
+        }
+        // 更新按鈕狀態
+        updateFilterButtonsState(category);
+      } else {
+        console.error('NotesManager 未正確初始化');
+      }
+    }
+
+    // 更新篩選按鈕狀態
+    function updateFilterButtonsState(activeCategory) {
+      const buttons = document.querySelectorAll('.btn-filter');
+      buttons.forEach(btn => {
+        btn.classList.remove('active');
+        const btnCategory = btn.textContent.includes('全部') ? 'all' : 
+                          btn.getAttribute('data-category') || 
+                          btn.textContent.replace(/^\S+\s/, ''); // 移除圖示部分
+        if ((activeCategory === 'all' && btn.textContent.includes('全部')) ||
+            btnCategory === activeCategory) {
+          btn.classList.add('active');
+        }
+      });
+    }
+
+    // 動態更新篩選按鈕
+    function updateFilterButtons() {
+      console.log('更新篩選按鈕...');
+      const container = document.getElementById('filterButtonsContainer');
+      if (!container || !categoryManager) {
+        console.warn('篩選按鈕容器或類別管理器不存在');
         return;
       }
-      
-      if (typeof CategoryUI === 'undefined') {
-        console.error('CategoryUI 未定義！請檢查 category-ui.js 是否正確載入。');
-        return;
-      }
-      
-      if (typeof NotesManager === 'undefined') {
-        console.error('NotesManager 未定義！請檢查 notes.js 是否正確載入。');
-        return;
-      }
-      
-      // 初始化應用程式
+
+      // 清空容器
+      container.innerHTML = '';
+
+      // 添加"全部"按鈕
+      const allButton = document.createElement('button');
+      allButton.className = 'btn btn-filter active';
+      allButton.textContent = '全部';
+      allButton.onclick = () => filterByCategory('all');
+      container.appendChild(allButton);
+
+      // 添加類別按鈕
       try {
-        initializeApp();
+        const categories = categoryManager.getAllCategories();
+        categories.forEach(category => {
+          const button = document.createElement('button');
+          button.className = 'btn btn-filter';
+          button.innerHTML = `${category.icon} ${category.name}`;
+          button.setAttribute('data-category', category.name);
+          button.onclick = () => filterByCategory(category.name);
+          container.appendChild(button);
+        });
+        console.log(`已生成 ${categories.length + 1} 個篩選按鈕`);
       } catch (error) {
-        console.error('初始化失敗:', error);
-        alert('應用程式初始化失敗，請檢查 Console 錯誤訊息或重新整理頁面。');
+        console.error('生成篩選按鈕時發生錯誤:', error);
+      }
+    }
+
+    // 初始化檢查函數
+    function checkAndInitialize() {
+      console.log('檢查組件載入狀態...');
+      
+      const checks = {
+        CategoryManager: typeof CategoryManager !== 'undefined',
+        CategoryUI: typeof CategoryUI !== 'undefined',
+        NotesManager: typeof NotesManager !== 'undefined'
+      };
+
+      console.log('組件檢查結果:', checks);
+
+      // 如果有組件未載入，顯示錯誤訊息
+      const missingComponents = Object.entries(checks)
+        .filter(([name, loaded]) => !loaded)
+        .map(([name]) => name);
+
+      if (missingComponents.length > 0) {
+        console.error('未載入的組件:', missingComponents);
+        const errorMessage = `以下組件未正確載入: ${missingComponents.join(', ')}\n\n請檢查對應的 JS 檔案是否存在：\n${missingComponents.map(name => `- js/${name.toLowerCase().replace('manager', '').replace('ui', '-ui')}.js`).join('\n')}`;
+        alert(errorMessage);
+        return false;
+      }
+
+      return true;
+    }
+
+    // 初始化應用程式
+    function initializeApplication() {
+      console.log('開始初始化應用程式...');
+      
+      try {
+        // 1. 初始化類別管理器
+        if (typeof CategoryManager !== 'undefined') {
+          categoryManager = new CategoryManager();
+          categoryManager.initialize();
+          console.log('✓ CategoryManager 初始化完成');
+        }
+
+        // 2. 初始化類別 UI
+        if (typeof CategoryUI !== 'undefined') {
+          categoryUI = new CategoryUI();
+          categoryUI.initialize();
+          console.log('✓ CategoryUI 初始化完成');
+        }
+
+        // 3. 初始化筆記管理器
+        if (typeof NotesManager !== 'undefined') {
+          notesManager = new NotesManager();
+          notesManager.initialize();
+          console.log('✓ NotesManager 初始化完成');
+        }
+
+        // 4. 初始化主應用程式
+        if (typeof initializeApp === 'function') {
+          initializeApp();
+          console.log('✓ 主應用程式初始化完成');
+        }
+
+        // 5. 更新UI組件
+        setTimeout(() => {
+          if (categoryManager) {
+            categoryManager.updateCategorySelect();
+            updateFilterButtons();
+            console.log('✓ UI 組件更新完成');
+          }
+        }, 100);
+
+        console.log('🎉 應用程式初始化成功！');
+        
+      } catch (error) {
+        console.error('❌ 初始化過程中發生錯誤:', error);
+        alert('應用程式初始化失敗。請檢查瀏覽器控制台獲取詳細錯誤訊息，或嘗試重新整理頁面。');
+      }
+    }
+
+    // DOM 載入完成後執行
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM 載入完成，開始初始化流程...');
+      
+      // 延遲執行，確保所有腳本都已載入
+      setTimeout(() => {
+        if (checkAndInitialize()) {
+          initializeApplication();
+        }
+      }, 100);
+    });
+
+    // 為了相容性，也監聽 window.onload
+    window.addEventListener('load', function() {
+      console.log('頁面完全載入完成');
+      
+      // 如果還沒有初始化，再嘗試一次
+      if (!categoryManager || !categoryUI || !notesManager) {
+        console.log('檢測到組件未初始化，嘗試重新初始化...');
+        setTimeout(() => {
+          if (checkAndInitialize()) {
+            initializeApplication();
+          }
+        }, 200);
       }
     });
   </script>
