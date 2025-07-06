@@ -949,6 +949,64 @@
         body.dark .avatar-option-group p {
             color: #D2B48C !important;
         }
+
+        /* Toast 提示訊息動畫 */
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        /* 表單驗證樣式 */
+        .form-group input.error,
+        .form-group textarea.error {
+            border-color: #D4A574;
+            background-color: rgba(212, 165, 116, 0.1);
+        }
+
+        body.dark .form-group input.error,
+        body.dark .form-group textarea.error {
+            border-color: #C19660;
+            background-color: rgba(193, 150, 96, 0.1);
+        }
+
+        /* 載入狀態 */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* 個人資料區塊動畫 */
+        .profile-section {
+            animation: profileFadeIn 0.5s ease-out;
+        }
+
+        @keyframes profileFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -1470,20 +1528,32 @@
         function initializeMirukuApp() {
             console.log('初始化 Miruku 應用程式...');
             
-            notesManager = new NotesManager();
-            categoryManager = new CategoryManager();
-            categoryUI = new CategoryUI(categoryManager);
-            
-            // 載入個人資料
-            loadUserProfile();
-            
-            // 初始化界面
-            categoryManager.renderCategoryList();
-            categoryManager.updateNoteFormCategories();
-            notesManager.updateStats();
-            notesManager.renderNotes();
-            
-            console.log('Miruku 應用程式初始化完成！');
+            try {
+                notesManager = new NotesManager();
+                categoryManager = new CategoryManager();
+                categoryUI = new CategoryUI(categoryManager);
+                
+                // 載入個人資料（在界面元素確保存在後）
+                console.log('載入個人資料...');
+                loadUserProfile();
+                
+                // 初始化界面
+                console.log('初始化界面...');
+                categoryManager.renderCategoryList();
+                categoryManager.updateNoteFormCategories();
+                notesManager.updateStats();
+                notesManager.renderNotes();
+                
+                // 確保個人資料正確顯示
+                setTimeout(() => {
+                    updateProfileDisplay();
+                    console.log('個人資料顯示確認完成');
+                }, 200);
+                
+                console.log('Miruku 應用程式初始化完成！');
+            } catch (error) {
+                console.error('應用程式初始化失敗:', error);
+            }
         }
 
         // 主題切換
@@ -1586,32 +1656,80 @@
         function loadUserProfile() {
             const saved = localStorage.getItem('miruku_profile');
             if (saved) {
-                userProfile = { ...userProfile, ...JSON.parse(saved) };
+                try {
+                    const loadedProfile = JSON.parse(saved);
+                    userProfile = { ...userProfile, ...loadedProfile };
+                    console.log('已載入個人資料:', userProfile);
+                } catch (error) {
+                    console.error('載入個人資料失敗:', error);
+                }
             }
-            updateProfileDisplay();
+            // 確保界面更新
+            setTimeout(updateProfileDisplay, 100);
         }
 
         function saveUserProfile() {
-            localStorage.setItem('miruku_profile', JSON.stringify(userProfile));
-            updateProfileDisplay();
+            try {
+                localStorage.setItem('miruku_profile', JSON.stringify(userProfile));
+                console.log('個人資料已儲存:', userProfile);
+                // 立即更新界面
+                updateProfileDisplay();
+                // 觸發自定義事件通知其他組件
+                window.dispatchEvent(new CustomEvent('profileUpdated', { detail: userProfile }));
+            } catch (error) {
+                console.error('儲存個人資料失敗:', error);
+                alert('儲存失敗，請重試');
+            }
         }
 
         function updateProfileDisplay() {
-            document.getElementById('profileName').textContent = userProfile.name;
-            document.getElementById('profileBio').innerHTML = userProfile.bio;
-            
-            const avatarDisplay = document.getElementById('avatarDisplay');
-            if (userProfile.avatarType === 'image' && userProfile.avatar) {
-                avatarDisplay.innerHTML = `<img src="${userProfile.avatar}" alt="頭像">`;
-            } else {
-                avatarDisplay.innerHTML = `<div class="profile-avatar-placeholder">${userProfile.avatar}</div>`;
+            try {
+                const profileNameEl = document.getElementById('profileName');
+                const profileBioEl = document.getElementById('profileBio');
+                const avatarDisplayEl = document.getElementById('avatarDisplay');
+                
+                if (profileNameEl) {
+                    profileNameEl.textContent = userProfile.name || 'M 醬';
+                }
+                
+                if (profileBioEl) {
+                    profileBioEl.innerHTML = userProfile.bio || '醫學系學生 × 程式愛好者<br>每天進步 0.1% ✨';
+                }
+                
+                if (avatarDisplayEl) {
+                    if (userProfile.avatarType === 'image' && userProfile.avatar) {
+                        avatarDisplayEl.innerHTML = `<img src="${userProfile.avatar}" alt="頭像">`;
+                    } else {
+                        const avatarText = userProfile.avatar || 'M醬';
+                        avatarDisplayEl.innerHTML = `<div class="profile-avatar-placeholder">${avatarText}</div>`;
+                    }
+                }
+                
+                console.log('個人資料界面已更新');
+            } catch (error) {
+                console.error('更新個人資料界面失敗:', error);
             }
         }
 
         function openProfileModal() {
-            document.getElementById('profileNameInput').value = userProfile.name;
-            document.getElementById('profileBioInput').value = userProfile.bio.replace('<br>', '\n');
-            document.getElementById('profileModal').style.display = 'block';
+            try {
+                const profileNameInput = document.getElementById('profileNameInput');
+                const profileBioInput = document.getElementById('profileBioInput');
+                
+                if (profileNameInput) {
+                    profileNameInput.value = userProfile.name || '';
+                }
+                
+                if (profileBioInput) {
+                    // 將 HTML 的 <br> 轉換為換行符
+                    const bioText = (userProfile.bio || '').replace(/<br\s*\/?>/gi, '\n');
+                    profileBioInput.value = bioText;
+                }
+                
+                document.getElementById('profileModal').style.display = 'block';
+            } catch (error) {
+                console.error('開啟個人資料編輯失敗:', error);
+            }
         }
 
         function changeAvatar() {
@@ -1619,10 +1737,18 @@
         }
 
         function selectPresetAvatar(avatar) {
-            userProfile.avatar = avatar;
-            userProfile.avatarType = 'text';
-            saveUserProfile();
-            closeModal('avatarModal');
+            try {
+                userProfile.avatar = avatar;
+                userProfile.avatarType = 'text';
+                handleProfileUpdate(); // 使用新的同步機制
+                closeModal('avatarModal');
+                
+                // 顯示成功訊息
+                showToast('頭像已更新！');
+            } catch (error) {
+                console.error('更新頭像失敗:', error);
+                alert('更新頭像失敗，請重試');
+            }
         }
 
         function handleAvatarUpload(event) {
@@ -1635,13 +1761,92 @@
                 
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    userProfile.avatar = e.target.result;
-                    userProfile.avatarType = 'image';
-                    saveUserProfile();
-                    closeModal('avatarModal');
+                    try {
+                        userProfile.avatar = e.target.result;
+                        userProfile.avatarType = 'image';
+                        handleProfileUpdate(); // 使用新的同步機制
+                        closeModal('avatarModal');
+                        
+                        // 顯示成功訊息
+                        showToast('頭像已上傳！');
+                    } catch (error) {
+                        console.error('上傳頭像失敗:', error);
+                        alert('上傳頭像失敗，請重試');
+                    }
                 };
                 reader.readAsDataURL(file);
             }
+        }
+
+        // 簡單的提示訊息功能
+        function showToast(message) {
+            // 創建提示元素
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #C8A882, #D2B48C);
+                color: #FDF8F0;
+                padding: 12px 20px;
+                border-radius: 25px;
+                font-size: 0.9rem;
+                font-weight: 500;
+                box-shadow: 0 4px 12px rgba(200, 168, 130, 0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                font-family: 'Zen Maru Gothic', sans-serif;
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // 3秒後移除
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // 強制同步個人資料到界面的函數
+        function forceProfileSync() {
+            console.log('強制同步個人資料...');
+            
+            // 重新載入資料
+            loadUserProfile();
+            
+            // 多次嘗試更新界面，確保成功
+            let attempts = 0;
+            const maxAttempts = 5;
+            
+            const syncInterval = setInterval(() => {
+                attempts++;
+                updateProfileDisplay();
+                
+                // 檢查是否成功更新
+                const profileNameEl = document.getElementById('profileName');
+                const currentDisplayName = profileNameEl ? profileNameEl.textContent : '';
+                
+                if (currentDisplayName === userProfile.name || attempts >= maxAttempts) {
+                    clearInterval(syncInterval);
+                    if (attempts >= maxAttempts && currentDisplayName !== userProfile.name) {
+                        console.warn('個人資料同步可能失敗');
+                        showToast('界面更新可能有延遲，請重新整理頁面');
+                    } else {
+                        console.log('個人資料同步成功');
+                    }
+                }
+            }, 100);
+        }
+
+        // 在關鍵操作後調用同步函數
+        function handleProfileUpdate() {
+            saveUserProfile();
+            forceProfileSync();
         }
         function editCategory(key) {
             const category = categoryManager.categories[key];
@@ -1676,8 +1881,23 @@
             
             loadTheme();
             
+            // 確保 DOM 完全準備好後再初始化
             setTimeout(() => {
+                console.log('開始初始化應用程式...');
                 initializeMirukuApp();
+                
+                // 驗證初始化結果
+                setTimeout(() => {
+                    const profileName = document.getElementById('profileName');
+                    const profileBio = document.getElementById('profileBio');
+                    const avatarDisplay = document.getElementById('avatarDisplay');
+                    
+                    console.log('驗證個人資料元素:');
+                    console.log('- 姓名元素:', profileName ? '✓' : '✗');
+                    console.log('- 自我介紹元素:', profileBio ? '✓' : '✗');
+                    console.log('- 頭像元素:', avatarDisplay ? '✓' : '✗');
+                    console.log('- 當前個人資料:', userProfile);
+                }, 300);
             }, 100);
 
             // 筆記表單提交
@@ -1744,13 +1964,84 @@
             document.getElementById('profileForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                userProfile.name = document.getElementById('profileNameInput').value || 'M 醬';
-                userProfile.bio = document.getElementById('profileBioInput').value.replace(/\n/g, '<br>') || '醫學系學生 × 程式愛好者<br>每天進步 0.1% ✨';
-                
-                saveUserProfile();
-                closeModal('profileModal');
-                
-                alert('個人資料已成功更新！');
+                try {
+                    const nameInput = document.getElementById('profileNameInput');
+                    const bioInput = document.getElementById('profileBioInput');
+                    
+                    // 表單驗證
+                    let isValid = true;
+                    
+                    // 移除之前的錯誤樣式
+                    nameInput.classList.remove('error');
+                    bioInput.classList.remove('error');
+                    
+                    const newName = nameInput.value.trim();
+                    const newBio = bioInput.value.trim();
+                    
+                    if (!newName) {
+                        nameInput.classList.add('error');
+                        isValid = false;
+                        showToast('請輸入姓名或暱稱');
+                        return;
+                    }
+                    
+                    if (newName.length > 20) {
+                        nameInput.classList.add('error');
+                        isValid = false;
+                        showToast('姓名不能超過 20 個字元');
+                        return;
+                    }
+                    
+                    if (newBio.length > 200) {
+                        bioInput.classList.add('error');
+                        isValid = false;
+                        showToast('自我介紹不能超過 200 個字元');
+                        return;
+                    }
+                    
+                    if (isValid) {
+                        // 更新個人資料
+                        userProfile.name = newName;
+                        userProfile.bio = newBio.replace(/\n/g, '<br>') || '醫學系學生 × 程式愛好者<br>每天進步 0.1% ✨';
+                        
+                        // 使用新的同步機制
+                        handleProfileUpdate();
+                        closeModal('profileModal');
+                        
+                        showToast('個人資料已成功更新！');
+                        
+                        console.log('個人資料更新完成:', userProfile);
+                    }
+                } catch (error) {
+                    console.error('更新個人資料失敗:', error);
+                    showToast('更新失敗，請重試');
+                }
+            });
+
+            // 監聽個人資料更新事件
+            window.addEventListener('profileUpdated', function(e) {
+                console.log('接收到個人資料更新事件:', e.detail);
+                // 可以在這裡添加其他需要同步更新的功能
+            });
+
+            // 添加調試模式支援（按 Ctrl+Shift+D 啟用）
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+                    console.log('=== 調試模式 ===');
+                    console.log('當前個人資料:', userProfile);
+                    console.log('本地儲存:', localStorage.getItem('miruku_profile'));
+                    forceProfileSync();
+                    showToast('已觸發強制同步！');
+                }
+            });
+
+            // 表單輸入時移除錯誤樣式
+            document.getElementById('profileNameInput').addEventListener('input', function() {
+                this.classList.remove('error');
+            });
+            
+            document.getElementById('profileBioInput').addEventListener('input', function() {
+                this.classList.remove('error');
             });
 
             // 點擊模態框外部關閉
