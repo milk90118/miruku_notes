@@ -39,7 +39,7 @@ class UIManager {
       this.setTheme(savedTheme);
     }
     
-    if (savedFont && this.fonts.some(f => f.id === savedFont)) {
+    if (savedFont && this.fonts.some(function(f) { return f.id === savedFont; })) {
       this.setFont(savedFont, false);
     } else {
       // 設定預設字體
@@ -59,33 +59,34 @@ class UIManager {
 
     const controlsContainer = document.createElement('div');
     controlsContainer.className = 'ui-controls';
-    controlsContainer.innerHTML = `
-      <div class="theme-controls">
-        <span class="control-label">🎨 主題：</span>
-        ${this.themes.map(theme => `
-          <button class="theme-btn ${theme} ${theme === this.currentTheme ? 'active' : ''}" 
-                  onclick="uiManager.setTheme('${theme}')"
-                  title="${this.getThemeName(theme)}"
-                  aria-label="切換到${this.getThemeName(theme)}">
-          </button>
-        `).join('')}
-      </div>
-      
-      <div class="font-controls">
-        <span class="control-label">✨ 字體：</span>
-        <select class="font-selector" onchange="uiManager.setFont(this.value)" onfocus="uiManager.showFontPreview()" onblur="uiManager.hideFontPreview()">
-          ${this.fonts.map(font => `
-            <option value="${font.id}" ${font.id === this.currentFont ? 'selected' : ''}
-                    style="font-family: ${font.family}">
-              ${font.name}
-            </option>
-          `).join('')}
-        </select>
-        <div class="font-preview" style="display: none;">
-          <span class="preview-text">醫學筆記 Medical Notes ✨</span>
-        </div>
-      </div>
-    `;
+    
+    const self = this;
+    
+    controlsContainer.innerHTML = 
+      '<div class="theme-controls">' +
+        '<span class="control-label">🎨 主題：</span>' +
+        this.themes.map(function(theme) {
+          return '<button class="theme-btn ' + theme + (theme === self.currentTheme ? ' active' : '') + '" ' +
+                 'onclick="uiManager.setTheme(\'' + theme + '\')" ' +
+                 'title="' + self.getThemeName(theme) + '" ' +
+                 'aria-label="切換到' + self.getThemeName(theme) + '">' +
+                 '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="font-controls">' +
+        '<span class="control-label">✨ 字體：</span>' +
+        '<select class="font-selector" onchange="uiManager.setFont(this.value)" onfocus="uiManager.showFontPreview()" onblur="uiManager.hideFontPreview()">' +
+          this.fonts.map(function(font) {
+            return '<option value="' + font.id + '"' + (font.id === self.currentFont ? ' selected' : '') + 
+                   ' style="font-family: ' + font.family + '">' +
+                   font.name +
+                   '</option>';
+          }).join('') +
+        '</select>' +
+        '<div class="font-preview" style="display: none;">' +
+          '<span class="preview-text">醫學筆記 Medical Notes ✨</span>' +
+        '</div>' +
+      '</div>';
 
     header.appendChild(controlsContainer);
   }
@@ -104,17 +105,20 @@ class UIManager {
   }
 
   // 設定字體
-  setFont(fontId, shouldShowNotification = true) {
-    const font = this.fonts.find(f => f.id === fontId);
+  setFont(fontId, shouldShowNotification) {
+    if (typeof shouldShowNotification === 'undefined') {
+      shouldShowNotification = true;
+    }
+    
+    const font = this.fonts.find(function(f) { return f.id === fontId; });
     if (!font) return;
 
-    // 移除舊字體類別
-    this.fonts.forEach(f => {
-      document.body.classList.remove(`font-${f.id}`);
-    });
-
-    // 套用新字體
-    document.body.classList.add(`font-${fontId}`);
+    // 移除所有字體類別
+    const self = this;
+    document.body.className = document.body.className.replace(/font-\w+/g, '');
+    
+    // 套用新字體類別
+    document.body.classList.add('font-' + fontId);
 
     this.currentFont = fontId;
     localStorage.setItem('miruku-ui-font', fontId);
@@ -125,66 +129,76 @@ class UIManager {
       fontSelector.value = fontId;
     }
 
-    // 顯示字體切換通知（只在用戶主動切換時顯示）
+    // 強制重新渲染
+    document.body.style.fontFamily = font.family;
+    setTimeout(function() {
+      document.body.style.fontFamily = '';
+    }, 10);
+
+    // 顯示字體切換通知
     if (shouldShowNotification) {
-      setTimeout(() => {
-        showNotification(`已切換到 ${font.name} 字體`, 'info');
+      setTimeout(function() {
+        if (typeof showNotification === 'function') {
+          showNotification('已切換到 ' + font.name + ' 字體', 'info');
+        }
       }, 100);
     }
   }
 
   // 設定主題
   setTheme(themeName) {
-    if (!this.themes.includes(themeName)) return;
+    if (this.themes.indexOf(themeName) === -1) return;
 
     // 移除舊主題
-    this.themes.forEach(theme => {
-      document.body.classList.remove(`theme-${theme}`);
+    const self = this;
+    this.themes.forEach(function(theme) {
+      document.body.classList.remove('theme-' + theme);
     });
 
     // 套用新主題
     if (themeName !== 'default') {
-      document.body.classList.add(`theme-${themeName}`);
+      document.body.classList.add('theme-' + themeName);
     }
 
     this.currentTheme = themeName;
     localStorage.setItem('miruku-ui-theme', themeName);
 
     // 更新主題按鈕狀態
-    document.querySelectorAll('.theme-btn').forEach(btn => {
+    document.querySelectorAll('.theme-btn').forEach(function(btn) {
       btn.classList.remove('active');
     });
-    document.querySelector(`.theme-btn.${themeName}`)?.classList.add('active');
-
-    // 顯示主題切換通知
-    showNotification(`已切換到${this.getThemeName(themeName)}`, 'info');
-  }
-    if (!this.themes.includes(themeName)) return;
-
-    // 移除舊主題
-    this.themes.forEach(theme => {
-      document.body.classList.remove(`theme-${theme}`);
-    });
-
-    // 套用新主題
-    if (themeName !== 'default') {
-      document.body.classList.add(`theme-${themeName}`);
+    const currentBtn = document.querySelector('.theme-btn.' + themeName);
+    if (currentBtn) {
+      currentBtn.classList.add('active');
     }
 
-    this.currentTheme = themeName;
-    localStorage.setItem('miruku-ui-theme', themeName);
-
-    // 更新主題按鈕狀態
-    document.querySelectorAll('.theme-btn').forEach(btn => {
-      btn.classList.remove('active');
-    });
-    document.querySelector(`.theme-btn.${themeName}`)?.classList.add('active');
-
     // 顯示主題切換通知
-    showNotification(`已切換到${this.getThemeName(themeName)}`, 'info');
+    if (typeof showNotification === 'function') {
+      showNotification('已切換到' + this.getThemeName(themeName), 'info');
+    }
   }
 
-  // 綁定 UI 事件
+  // 顯示字體預覽
+  showFontPreview() {
+    const preview = document.querySelector('.font-preview');
+    if (preview) {
+      preview.style.display = 'block';
+      preview.style.animation = 'fadeIn 0.3s ease-out';
+    }
+  }
+
+  // 隱藏字體預覽
+  hideFontPreview() {
+    const preview = document.querySelector('.font-preview');
+    if (preview) {
+      preview.style.animation = 'fadeOut 0.3s ease-out';
+      setTimeout(function() {
+        preview.style.display = 'none';
+      }, 300);
+    }
+  }
+
+  // 綁定事件監聽器
   bindUIEvents() {
     // 表單驗證
     this.setupFormValidation();
@@ -205,15 +219,15 @@ class UIManager {
     const contentInput = document.getElementById('noteContent');
 
     if (titleInput) {
-      titleInput.addEventListener('blur', () => {
+      titleInput.addEventListener('blur', function() {
         this.validateField(titleInput, '請輸入筆記標題');
-      });
+      }.bind(this));
     }
 
     if (contentInput) {
-      contentInput.addEventListener('blur', () => {
+      contentInput.addEventListener('blur', function() {
         this.validateField(contentInput, '請輸入筆記內容');
-      });
+      }.bind(this));
     }
   }
 
@@ -235,11 +249,10 @@ class UIManager {
       const errorElement = document.createElement('div');
       errorElement.className = 'error-message';
       errorElement.textContent = message;
-      errorElement.style.cssText = `
-        color: var(--danger);
-        font-size: 0.85rem;
-        margin-top: 0.25rem;
-      `;
+      errorElement.style.cssText = 
+        'color: var(--danger);' +
+        'font-size: 0.85rem;' +
+        'margin-top: 0.25rem;';
       field.parentNode.appendChild(errorElement);
     }
 
@@ -248,7 +261,7 @@ class UIManager {
 
   // 設定鍵盤導航
   setupKeyboardNavigation() {
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', function(e) {
       // Tab 導航增強
       if (e.key === 'Tab') {
         this.highlightFocusedElement();
@@ -259,30 +272,38 @@ class UIManager {
         switch (e.key) {
           case 'f':
             e.preventDefault();
-            document.getElementById('searchInput')?.focus();
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+              searchInput.focus();
+            }
             break;
           case 'n':
             e.preventDefault();
-            document.getElementById('noteTitle')?.focus();
+            const noteTitle = document.getElementById('noteTitle');
+            if (noteTitle) {
+              noteTitle.focus();
+            }
             break;
           case 'e':
             if (e.shiftKey) {
               e.preventDefault();
-              exportNotes();
+              if (typeof exportNotes === 'function') {
+                exportNotes();
+              }
             }
             break;
         }
       }
-    });
+    }.bind(this));
   }
 
   // 高亮聚焦元素
   highlightFocusedElement() {
-    document.querySelectorAll('.focus-highlight').forEach(el => {
+    document.querySelectorAll('.focus-highlight').forEach(function(el) {
       el.classList.remove('focus-highlight');
     });
 
-    setTimeout(() => {
+    setTimeout(function() {
       const focused = document.activeElement;
       if (focused && focused !== document.body) {
         focused.classList.add('focus-highlight');
@@ -302,23 +323,27 @@ class UIManager {
     const titleInput = document.getElementById('noteTitle');
     const contentInput = document.getElementById('noteContent');
 
-    const autoSave = () => {
+    const autoSave = function() {
       clearTimeout(autoSaveTimer);
-      autoSaveTimer = setTimeout(() => {
-        const title = titleInput?.value.trim();
-        const content = contentInput?.value.trim();
+      autoSaveTimer = setTimeout(function() {
+        const title = titleInput ? titleInput.value.trim() : '';
+        const content = contentInput ? contentInput.value.trim() : '';
         
-        if (title && content && notesManager.editId) {
+        if (title && content && window.notesManager && window.notesManager.editId) {
           // 自動儲存編輯中的筆記
           const category = document.getElementById('noteCategory').value;
-          notesManager.updateNote(notesManager.editId, title, content, category);
+          window.notesManager.updateNote(window.notesManager.editId, title, content, category);
           this.showAutoSaveIndicator();
         }
-      }, 3000); // 3秒後自動儲存
-    };
+      }.bind(this), 3000); // 3秒後自動儲存
+    }.bind(this);
 
-    titleInput?.addEventListener('input', autoSave);
-    contentInput?.addEventListener('input', autoSave);
+    if (titleInput) {
+      titleInput.addEventListener('input', autoSave);
+    }
+    if (contentInput) {
+      contentInput.addEventListener('input', autoSave);
+    }
   }
 
   // 顯示自動儲存指示器
@@ -326,24 +351,27 @@ class UIManager {
     const indicator = document.createElement('div');
     indicator.className = 'auto-save-indicator';
     indicator.textContent = '✓ 已自動儲存';
-    indicator.style.cssText = `
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background: var(--success);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      z-index: 1000;
-      animation: fadeIn 0.3s ease-out;
-    `;
+    indicator.style.cssText = 
+      'position: fixed;' +
+      'top: 20px;' +
+      'left: 20px;' +
+      'background: var(--success);' +
+      'color: white;' +
+      'padding: 0.5rem 1rem;' +
+      'border-radius: 20px;' +
+      'font-size: 0.85rem;' +
+      'z-index: 1000;' +
+      'animation: fadeIn 0.3s ease-out;';
 
     document.body.appendChild(indicator);
 
-    setTimeout(() => {
+    setTimeout(function() {
       indicator.style.animation = 'fadeOut 0.3s ease-out';
-      setTimeout(() => indicator.remove(), 300);
+      setTimeout(function() {
+        if (indicator.parentNode) {
+          indicator.remove();
+        }
+      }, 300);
     }, 2000);
   }
 
@@ -355,76 +383,16 @@ class UIManager {
       '#noteContent': '輸入筆記內容，支援多行文字',
       '#searchInput': '搜尋筆記標題或內容（Ctrl+F 快速聚焦）',
       '.btn-dark-mode': '切換深色/淺色模式',
-      '.btn[onclick="exportNotes()"]': '匯出所有筆記為 JSON 檔案（Ctrl+Shift+E）',
-      '.btn[onclick="importNotes()"]': '從 JSON 檔案匯入筆記'
+      '.btn[onclick*="exportNotes"]': '匯出所有筆記為 JSON 檔案（Ctrl+Shift+E）',
+      '.btn[onclick*="importNotes"]': '從 JSON 檔案匯入筆記'
     };
 
-    Object.entries(tooltips).forEach(([selector, text]) => {
+    Object.keys(tooltips).forEach(function(selector) {
       const element = document.querySelector(selector);
       if (element) {
-        element.title = text;
+        element.title = tooltips[selector];
       }
     });
-  }
-
-  // 顯示載入狀態
-  showLoading(element, text = '載入中...') {
-    const originalText = element.textContent;
-    element.textContent = text;
-    element.disabled = true;
-    element.classList.add('loading');
-
-    return () => {
-      element.textContent = originalText;
-      element.disabled = false;
-      element.classList.remove('loading');
-    };
-  }
-
-  // 確認對話框
-  confirm(message, onConfirm, onCancel) {
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
-    modal.innerHTML = `
-      <div class="modal-content">
-        <h3>確認操作</h3>
-        <p>${message}</p>
-        <div class="modal-actions">
-          <button class="btn btn-delete" onclick="this.closest('.modal-overlay').remove(); (${onCancel || (() => {})})()">取消</button>
-          <button class="btn btn-success" onclick="this.closest('.modal-overlay').remove(); (${onConfirm})()">確認</button>
-        </div>
-      </div>
-    `;
-
-    modal.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-    `;
-
-    const content = modal.querySelector('.modal-content');
-    content.style.cssText = `
-      background: white;
-      padding: 2rem;
-      border-radius: 15px;
-      max-width: 400px;
-      width: 90%;
-      text-align: center;
-    `;
-
-    if (document.body.classList.contains('dark-mode')) {
-      content.style.background = 'var(--dark-card)';
-      content.style.color = 'var(--dark-text)';
-    }
-
-    document.body.appendChild(modal);
   }
 
   // 取得使用者偏好設定
@@ -439,73 +407,43 @@ class UIManager {
 
   // 設定使用者偏好
   setUserPreference(key, value) {
-    localStorage.setItem(`miruku-${key}`, value);
+    localStorage.setItem('miruku-' + key, value);
   }
 }
 
 // 建立 UI 管理器實例
-let uiManager;
+let uiManager = null;
 
 // 在 DOM 載入完成後初始化 UI 管理器
 document.addEventListener('DOMContentLoaded', function() {
-  uiManager = new UIManager();
-  uiManager.initialize();
+  // 延遲初始化，確保其他組件先載入
+  setTimeout(function() {
+    if (!uiManager) {
+      console.log('初始化 UI 管理器...');
+      uiManager = new UIManager();
+      uiManager.initialize();
+      
+      // 確保字體立即應用
+      setTimeout(function() {
+        const savedFont = localStorage.getItem('miruku-ui-font') || 'zen';
+        document.body.className = document.body.className.replace(/font-\w+/g, '');
+        document.body.classList.add('font-' + savedFont);
+      }, 50);
+    }
+  }, 100);
 });
 
 // 增強原有的切換深色模式功能
 function toggleDarkMode() {
-  uiManager.isDarkMode = !uiManager.isDarkMode;
-  document.body.classList.toggle("dark-mode", uiManager.isDarkMode);
-  
-  // 儲存設定
-  localStorage.setItem('miruku-theme', uiManager.isDarkMode ? 'dark' : 'light');
-  
-  showNotification(`已切換至${uiManager.isDarkMode ? '深色' : '淺色'}模式`, "info");
-}
-
-// CSS 樣式補充
-const additionalStyles = `
-<style>
-.focus-highlight {
-  box-shadow: 0 0 0 3px rgba(66, 165, 245, 0.4) !important;
-}
-
-.error {
-  border-color: var(--danger) !important;
-  box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.2) !important;
-}
-
-.error-message {
-  animation: fadeIn 0.3s ease-out;
-}
-
-.modal-overlay {
-  animation: fadeIn 0.3s ease-out;
-}
-
-.modal-content {
-  animation: fadeIn 0.3s ease-out 0.1s both;
-}
-
-.modal-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 1.5rem;
-}
-
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-10px);
+  if (uiManager) {
+    uiManager.isDarkMode = !uiManager.isDarkMode;
+    document.body.classList.toggle("dark-mode", uiManager.isDarkMode);
+    
+    // 儲存設定
+    localStorage.setItem('miruku-theme', uiManager.isDarkMode ? 'dark' : 'light');
+    
+    if (typeof showNotification === 'function') {
+      showNotification('已切換至' + (uiManager.isDarkMode ? '深色' : '淺色') + '模式', "info");
+    }
   }
 }
-</style>
-`;
-
-// 將額外樣式加入頁面
-document.head.insertAdjacentHTML('beforeend', additionalStyles);

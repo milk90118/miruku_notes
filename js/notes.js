@@ -16,7 +16,6 @@ class NotesManager {
       this.loadDefaultNotes();
     }
     this.filteredNotes = [...this.notes];
-    console.log('NotesManager 初始化完成，載入', this.notes.length, '筆記');
   }
 
   // 載入預設筆記
@@ -88,10 +87,10 @@ class NotesManager {
 
   // 更新筆記
   updateNote(id, title, content, category) {
-    const index = this.notes.findIndex(note => note.id === id);
+    const index = this.notes.findIndex(function(note) { return note.id === id; });
     if (index !== -1) {
       this.notes[index] = {
-        ...this.notes[index],
+        id: this.notes[index].id,
         title: title.trim(),
         content: content.trim(),
         category: category,
@@ -106,7 +105,7 @@ class NotesManager {
 
   // 刪除筆記
   deleteNote(id) {
-    const index = this.notes.findIndex(note => note.id === id);
+    const index = this.notes.findIndex(function(note) { return note.id === id; });
     if (index !== -1) {
       const deletedNote = this.notes.splice(index, 1)[0];
       this.saveNotes();
@@ -118,7 +117,7 @@ class NotesManager {
 
   // 取得筆記
   getNote(id) {
-    return this.notes.find(note => note.id === id);
+    return this.notes.find(function(note) { return note.id === id; });
   }
 
   // 搜尋筆記
@@ -139,16 +138,18 @@ class NotesManager {
 
     // 分類篩選
     if (this.currentFilter !== 'all') {
-      filtered = filtered.filter(note => note.category === this.currentFilter);
+      filtered = filtered.filter(function(note) {
+        return note.category === this.currentFilter;
+      }.bind(this));
     }
 
     // 搜尋篩選
     if (this.searchQuery) {
-      filtered = filtered.filter(note => 
-        note.title.toLowerCase().includes(this.searchQuery) ||
-        note.content.toLowerCase().includes(this.searchQuery) ||
-        note.category.toLowerCase().includes(this.searchQuery)
-      );
+      filtered = filtered.filter(function(note) {
+        return note.title.toLowerCase().indexOf(this.searchQuery) !== -1 ||
+               note.content.toLowerCase().indexOf(this.searchQuery) !== -1 ||
+               note.category.toLowerCase().indexOf(this.searchQuery) !== -1;
+      }.bind(this));
     }
 
     this.filteredNotes = filtered;
@@ -163,23 +164,22 @@ class NotesManager {
   getStats() {
     const total = this.notes.length;
     const today = new Date().toDateString();
-    const todayCount = this.notes.filter(note => 
-      new Date(note.date).toDateString() === today
-    ).length;
+    const todayCount = this.notes.filter(function(note) {
+      return new Date(note.date).toDateString() === today;
+    }).length;
 
     const categoryCount = {};
-    this.notes.forEach(note => {
+    this.notes.forEach(function(note) {
       categoryCount[note.category] = (categoryCount[note.category] || 0) + 1;
     });
 
-    const favoriteCategory = Object.keys(categoryCount).length > 0 
-      ? Object.keys(categoryCount).reduce((a, b) => 
-          categoryCount[a] > categoryCount[b] ? a : b
-        )
-      : '-';
+    const favoriteCategory = Object.keys(categoryCount).length > 0 ? 
+      Object.keys(categoryCount).reduce(function(a, b) {
+        return categoryCount[a] > categoryCount[b] ? a : b;
+      }) : '-';
 
     return {
-      total,
+      total: total,
       today: todayCount,
       favorite: favoriteCategory
     };
@@ -229,13 +229,15 @@ class NotesManager {
       }
 
       // 確保每筆記錄都有必要的欄位
-      this.notes = this.notes.map(note => ({
-        id: note.id || Date.now() + Math.random(),
-        title: note.title || '未命名筆記',
-        content: note.content || '',
-        category: note.category || '其他',
-        date: note.date || new Date().toISOString()
-      }));
+      this.notes = this.notes.map(function(note) {
+        return {
+          id: note.id || Date.now() + Math.random(),
+          title: note.title || '未命名筆記',
+          content: note.content || '',
+          category: note.category || '其他',
+          date: note.date || new Date().toISOString()
+        };
+      });
 
       this.saveNotes();
       this.applyFilters();
@@ -248,15 +250,17 @@ class NotesManager {
 
   // 快速新增筆記（用於批次新增）
   batchAddNotes(notesArray) {
-    const newNotes = notesArray.map(note => ({
-      id: Date.now() + Math.random(),
-      title: note.title,
-      content: note.content,
-      category: note.category || '其他',
-      date: new Date().toISOString()
-    }));
+    const newNotes = notesArray.map(function(note) {
+      return {
+        id: Date.now() + Math.random(),
+        title: note.title,
+        content: note.content,
+        category: note.category || '其他',
+        date: new Date().toISOString()
+      };
+    });
 
-    this.notes = [...newNotes, ...this.notes];
+    this.notes = newNotes.concat(this.notes);
     this.saveNotes();
     this.applyFilters();
     return newNotes;

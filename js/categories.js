@@ -21,7 +21,6 @@ class CategoryManager {
       this.categories = [...this.defaultCategories];
       this.saveCategories();
     }
-    console.log('CategoryManager 初始化完成，載入', this.categories.length, '個類別');
   }
 
   // 載入類別
@@ -136,10 +135,7 @@ class CategoryManager {
   // 更新筆記表單的類別選單
   updateCategorySelect() {
     const selectElement = document.getElementById('noteCategory');
-    if (!selectElement) {
-      console.warn('找不到 noteCategory 選單元素');
-      return;
-    }
+    if (!selectElement) return;
 
     // 記住目前選中的值
     const currentValue = selectElement.value;
@@ -152,7 +148,6 @@ class CategoryManager {
       const option = document.createElement('option');
       option.value = category.name;
       option.textContent = category.icon + ' ' + category.name;
-      option.style.color = category.color;
       selectElement.appendChild(option);
     });
 
@@ -162,8 +157,6 @@ class CategoryManager {
     } else {
       selectElement.value = this.categories[0] ? this.categories[0].name : '';
     }
-
-    console.log('類別選單已更新，共', this.categories.length, '個選項');
   }
 
   // 取得類別的圖示
