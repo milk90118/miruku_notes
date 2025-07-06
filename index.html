@@ -1,1148 +1,292 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M 醬 探索日記 MED x CS x LIFE</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: all 0.3s ease;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        /* 深色模式樣式 */
-        body.dark {
-            background: linear-gradient(135deg, #2c3e50 0%, #3a5998 100%);
-            color: #e1e1e1;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.95);
-            min-height: 100vh;
-            backdrop-filter: blur(10px);
-            border-radius: 0;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
-        }
-
-        body.dark .container {
-            background: rgba(44, 62, 80, 0.95);
-            color: #e1e1e1;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding: 20px 0;
-            border-bottom: 2px solid #eee;
-        }
-
-        body.dark .header {
-            border-bottom-color: #555;
-        }
-
-        .logo {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        body.dark .logo {
-            color: #9bb3ff;
-        }
-
-        .subtitle {
-            font-size: 0.9rem;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        body.dark .subtitle {
-            color: #bbb;
-        }
-
-        .theme-toggle {
-            background: none;
-            border: 2px solid #667eea;
-            color: #667eea;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-        }
-
-        .theme-toggle:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        body.dark .theme-toggle {
-            border-color: #9bb3ff;
-            color: #9bb3ff;
-        }
-
-        body.dark .theme-toggle:hover {
-            background: #9bb3ff;
-            color: #2c3e50;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .sidebar {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            height: fit-content;
-        }
-
-        body.dark .sidebar {
-            background: #34495e;
-        }
-
-        .category-list {
-            list-style: none;
-        }
-
-        .category-item {
-            padding: 12px 15px;
-            margin: 5px 0;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .category-item:hover {
-            background: rgba(102, 126, 234, 0.1);
-            transform: translateX(5px);
-        }
-
-        .category-item.active {
-            background: #667eea;
-            color: white;
-        }
-
-        .notes-area {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            min-height: 400px;
-        }
-
-        body.dark .notes-area {
-            background: #34495e;
-        }
-
-        .notes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .note-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        body.dark .note-card {
-            background: #2c3e50;
-            color: #e1e1e1;
-        }
-
-        .note-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .note-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        body.dark .note-title {
-            color: #e1e1e1;
-        }
-
-        .note-content {
-            color: #666;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-
-        body.dark .note-content {
-            color: #bbb;
-        }
-
-        .note-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
-            color: #999;
-        }
-
-        .note-category {
-            background: #667eea;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-        }
-
-        .actions {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn.secondary {
-            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-        }
-
-        .empty-state h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 90%;
-            overflow-y: auto;
-        }
-
-        body.dark .modal-content {
-            background: #34495e;
-            color: #e1e1e1;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        body.dark .form-group label {
-            color: #e1e1e1;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        body.dark .form-group input,
-        body.dark .form-group select,
-        body.dark .form-group textarea {
-            background: #2c3e50;
-            color: #e1e1e1;
-            border-color: #555;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-
-        .close {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #999;
-        }
-
-        .close:hover {
-            color: #333;
-        }
-
-        body.dark .close:hover {
-            color: #e1e1e1;
-        }
-
-        .category-manage-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px;
-            margin: 10px 0;
-            background: white;
-            border-radius: 10px;
-            border: 2px solid #eee;
-            transition: all 0.3s ease;
-        }
-
-        body.dark .category-manage-item {
-            background: #2c3e50;
-            border-color: #555;
-        }
-
-        .category-manage-item:hover {
-            border-color: #667eea;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
-        }
-
-        .category-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .category-icon {
-            font-size: 1.5rem;
-        }
-
-        .category-details h4 {
-            margin: 0;
-            color: #333;
-            font-size: 1.1rem;
-        }
-
-        body.dark .category-details h4 {
-            color: #e1e1e1;
-        }
-
-        .category-details p {
-            margin: 0;
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        body.dark .category-details p {
-            color: #bbb;
-        }
-
-        .category-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-small {
-            padding: 8px 12px;
-            font-size: 0.8rem;
-            min-width: auto;
-        }
-
-        .btn.danger {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-        }
-
-        .btn.danger:hover {
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
-        }
-
-        .category-count {
-            background: #667eea;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            margin-left: 10px;
-        }
-
-        .warning-text {
-            background: #fff3cd;
-            color: #856404;
-            padding: 10px;
-            border-radius: 8px;
-            margin: 10px 0;
-            border: 1px solid #ffeaa7;
-        }
-
-        body.dark .warning-text {
-            background: #553d00;
-            color: #ffeb3b;
-            border-color: #b8860b;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miruku 醫學筆記</title>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Kosugi+Maru&family=M+PLUS+Rounded+1c:wght@400;500;700&family=Sawarabi+Gothic&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;500;700&family=Quicksand:wght@400;500;700&family=Nunito:wght@400;500;700&family=Comfortaa:wght@400;500;700&family=Fredoka:wght@400;500;700&family=Varela+Round&family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/category-styles.css">
 </head>
-<body>
-    <div class="container">
-        <header class="header">
-            <div class="title-section">
-                <h1 class="logo">M 醬 探索日記 MED x CS x LIFE</h1>
-                <p class="subtitle">🌸 每天 0.1% 的前進 ✨</p>
-            </div>
-            <button class="theme-toggle" onclick="toggleTheme()">🌓 切換日夜模式</button>
-        </header>
+<body class="font-zen">
+  <div class="container">
+    <header>
+      <h1>M 醬 探索日記 MED x CS x LIFE</h1>
+      <p>🌸 每天 0.1% 的前進 ✨</p>
+      <div style="margin-bottom: 1rem;">
+        <button class="btn btn-dark-mode" onclick="toggleDarkMode()">🌓 切換日夜模式</button>
+      </div>
+      <!-- 主題選擇器會透過 JavaScript 動態新增到這裡 -->
+    </header>
 
-        <section class="stats">
-            <div class="stat-card">
-                <div class="stat-number" id="totalNotes">0</div>
-                <div class="stat-label">總筆記數</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="todayNotes">0</div>
-                <div class="stat-label">今日新增</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="favoriteSubject">-</div>
-                <div class="stat-label">最愛科目</div>
-            </div>
-        </section>
-
-        <section class="actions">
-            <button class="btn" onclick="openAddNoteModal()">✏️ 新增筆記</button>
-            <button class="btn secondary" onclick="importNotes()">📥 匯入筆記</button>
-            <button class="btn secondary" onclick="exportNotes()">📤 匯出筆記</button>
-            <button class="btn secondary" onclick="openCategoryModal()">🗂️ 管理類別</button>
-        </section>
-
-        <div class="main-content">
-            <aside class="sidebar">
-                <h3 style="margin-bottom: 15px;">📚 分類</h3>
-                <ul class="category-list" id="categoryList">
-                    <li class="category-item active" onclick="filterNotes('all')">📋 全部</li>
-                    <li class="category-item" onclick="filterNotes('anatomy')">🦴 解剖學</li>
-                    <li class="category-item" onclick="filterNotes('physiology')">❤️ 生理學</li>
-                    <li class="category-item" onclick="filterNotes('pharmacology')">💊 藥理學</li>
-                    <li class="category-item" onclick="filterNotes('clinical')">🏥 臨床醫學</li>
-                    <li class="category-item" onclick="filterNotes('pathology')">🔬 病理學</li>
-                    <li class="category-item" onclick="filterNotes('diagnosis')">🩺 診斷學</li>
-                    <li class="category-item" onclick="filterNotes('other')">📚 其他</li>
-                </ul>
-            </aside>
-
-            <main class="notes-area">
-                <div id="notesContainer">
-                    <div class="empty-state">
-                        <h3>🌸 還沒有筆記喔！</h3>
-                        <p>開始記錄你的第一筆醫學筆記吧～</p>
-                    </div>
-                </div>
-            </main>
-        </div>
+    <div class="stats" id="statsContainer">
+      <div class="stat-card">
+        <div class="stat-number" id="totalNotes">0</div>
+        <div class="stat-label">總筆記數</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="todayNotes">0</div>
+        <div class="stat-label">今日新增</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="favoriteCategory">-</div>
+        <div class="stat-label">最愛科目</div>
+      </div>
     </div>
 
-    <!-- 新增筆記模態框 -->
-    <div id="addNoteModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('addNoteModal')">&times;</span>
-            <h2>✏️ 新增筆記</h2>
-            <form id="noteForm">
-                <div class="form-group">
-                    <label for="noteTitle">標題</label>
-                    <input type="text" id="noteTitle" required>
-                </div>
-                <div class="form-group">
-                    <label for="noteCategory">分類</label>
-                    <select id="noteCategory" required>
-                        <!-- 動態生成選項 -->
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="noteContent">內容</label>
-                    <textarea id="noteContent" required></textarea>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn secondary" onclick="closeModal('addNoteModal')">🔄 取消</button>
-                    <button type="submit" class="btn">📒 儲存筆記</button>
-                </div>
-            </form>
-        </div>
+    <div class="note-form">
+      <h2 style="margin-bottom: 1.5rem; color: var(--highlight);">✏️ 新增筆記</h2>
+      <input type="text" id="noteTitle" class="input" placeholder="輸入筆記標題...">
+      <textarea id="noteContent" class="input" placeholder="輸入筆記內容..."></textarea>
+      <select id="noteCategory">
+        <option value="解剖學">🦴 解剖學</option>
+        <option value="生理學">❤️ 生理學</option>
+        <option value="藥理學">💊 藥理學</option>
+        <option value="臨床醫學">🏥 臨床醫學</option>
+        <option value="病理學">🔬 病理學</option>
+        <option value="影像診斷學">🩺 診斷學</option>
+        <option value="其他">📚 其他</option>
+      </select>
+      <div class="form-actions">
+        <button class="btn" onclick="saveNote()">📒 儲存筆記</button>
+        <button class="btn btn-edit" onclick="clearForm()" id="clearBtn" style="display: none;">🔄 取消編輯</button>
+        <button class="btn btn-success" onclick="importNotes()">📥 匯入筆記</button>
+        <button class="btn btn-info" onclick="exportNotes()">📤 匯出筆記</button>
+        <button class="manage-categories-btn" id="manageCategoriesBtn">🗂️ 管理類別</button>
+      </div>
     </div>
 
-    <!-- 類別管理模態框 -->
-    <div id="categoryModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('categoryModal')">&times;</span>
-            <h2>🗂️ 管理類別</h2>
-            
-            <!-- 新增類別區塊 -->
-            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                <h3 style="margin-bottom: 15px;">➕ 新增類別</h3>
-                <form id="addCategoryForm">
-                    <div class="form-group">
-                        <label for="categoryKey">類別代碼</label>
-                        <input type="text" id="categoryKey" placeholder="例如: biochemistry" required pattern="[a-z_]+" title="只允許小寫字母和底線">
-                    </div>
-                    <div class="form-group">
-                        <label for="categoryIcon">圖示</label>
-                        <input type="text" id="categoryIcon" placeholder="例如: 🧬" required maxlength="2">
-                    </div>
-                    <div class="form-group">
-                        <label for="categoryName">名稱</label>
-                        <input type="text" id="categoryName" placeholder="例如: 生化學" required>
-                    </div>
-                    <button type="submit" class="btn">➕ 新增類別</button>
-                </form>
-            </div>
-
-            <!-- 現有類別列表 -->
-            <div>
-                <h3 style="margin-bottom: 15px;">📋 現有類別</h3>
-                <div id="categoryManageList">
-                    <!-- 動態生成類別列表 -->
-                </div>
-            </div>
-
-            <div class="modal-actions">
-                <button type="button" class="btn secondary" onclick="closeModal('categoryModal')">關閉</button>
-            </div>
-        </div>
+    <div class="search-section">
+      <input type="text" id="searchInput" class="input" placeholder="🔍 搜尋筆記..." onkeyup="searchNotes()">
+      <div class="filter-buttons" id="filterButtonsContainer">
+        <button class="btn btn-filter active" id="allCategoriesBtn">全部</button>
+      </div>
     </div>
 
-    <!-- 編輯類別模態框 -->
-    <div id="editCategoryModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('editCategoryModal')">&times;</span>
-            <h2>✏️ 編輯類別</h2>
-            <form id="editCategoryForm">
-                <div class="form-group">
-                    <label for="editCategoryKey">類別代碼</label>
-                    <input type="text" id="editCategoryKey" readonly style="background: #f0f0f0;">
-                </div>
-                <div class="form-group">
-                    <label for="editCategoryIcon">圖示</label>
-                    <input type="text" id="editCategoryIcon" required maxlength="2">
-                </div>
-                <div class="form-group">
-                    <label for="editCategoryName">名稱</label>
-                    <input type="text" id="editCategoryName" required>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn secondary" onclick="closeModal('editCategoryModal')">取消</button>
-                    <button type="submit" class="btn">💾 儲存變更</button>
-                </div>
-            </form>
-        </div>
+    <div class="notes-grid" id="notesContainer">
+      <div class="empty-state">
+        <h3>🌸 還沒有筆記喔！</h3>
+        <p>開始記錄你的第一筆醫學筆記吧～</p>
+      </div>
     </div>
+  </div>
 
-    <!-- JavaScript -->
-    <script>
-        // 全域變量
-        let notes = [];
-        let currentFilter = 'all';
+  <footer>
+    © 2025 Miruku Notes | M醬的探索之旅 📖💗
+  </footer>
 
-        // 類別配置
-        const categories = {
-            anatomy: { name: '🦴 解剖學', icon: '🦴' },
-            physiology: { name: '❤️ 生理學', icon: '❤️' },
-            pharmacology: { name: '💊 藥理學', icon: '💊' },
-            clinical: { name: '🏥 臨床醫學', icon: '🏥' },
-            pathology: { name: '🔬 病理學', icon: '🔬' },
-            diagnosis: { name: '🩺 診斷學', icon: '🩺' },
-            other: { name: '📚 其他', icon: '📚' }
-        };
+  <!-- 隱藏的檔案上傳輸入 -->
+  <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="handleFileUpload(event)">
 
-        // NotesManager 類別
-        class NotesManager {
-            constructor() {
-                this.notes = this.loadNotes();
-            }
+  <!-- JavaScript 載入順序很重要 -->
+  <script src="js/notes.js"></script>
+  <script src="js/categories.js"></script>
+  <script src="js/category-ui.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    // 等待頁面完全載入
+    window.addEventListener('load', function() {
+      console.log('頁面載入完成，開始初始化...');
+      
+      // 延遲執行以確保所有腳本都已載入
+      setTimeout(function() {
+        initializeMirukuApp();
+      }, 200);
+    });
 
-            loadNotes() {
-                const saved = localStorage.getItem('miruku_notes');
-                return saved ? JSON.parse(saved) : [];
-            }
-
-            saveNotes() {
-                localStorage.setItem('miruku_notes', JSON.stringify(this.notes));
-                this.updateStats();
-                this.renderNotes();
-            }
-
-            addNote(noteData) {
-                const note = {
-                    id: Date.now(),
-                    title: noteData.title,
-                    content: noteData.content,
-                    category: noteData.category,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
-                };
-                this.notes.unshift(note);
-                this.saveNotes();
-                return note;
-            }
-
-            deleteNote(id) {
-                this.notes = this.notes.filter(note => note.id !== id);
-                this.saveNotes();
-            }
-
-            updateNote(id, noteData) {
-                const index = this.notes.findIndex(note => note.id === id);
-                if (index !== -1) {
-                    this.notes[index] = {
-                        ...this.notes[index],
-                        ...noteData,
-                        updatedAt: new Date().toISOString()
-                    };
-                    this.saveNotes();
-                }
-            }
-
-            getNotes(filter = 'all') {
-                if (filter === 'all') {
-                    return this.notes;
-                }
-                return this.notes.filter(note => note.category === filter);
-            }
-
-            updateStats() {
-                const totalNotes = this.notes.length;
-                const today = new Date().toDateString();
-                const todayNotes = this.notes.filter(note => 
-                    new Date(note.createdAt).toDateString() === today
-                ).length;
-
-                // 計算最愛科目
-                const categoryCount = {};
-                this.notes.forEach(note => {
-                    categoryCount[note.category] = (categoryCount[note.category] || 0) + 1;
-                });
-
-                let favoriteSubject = '-';
-                let maxCount = 0;
-                for (const [category, count] of Object.entries(categoryCount)) {
-                    if (count > maxCount) {
-                        maxCount = count;
-                        favoriteSubject = categoryManager ? 
-                            (categoryManager.categories[category]?.icon || category) : 
-                            (categories[category]?.icon || category);
-                    }
-                }
-
-                document.getElementById('totalNotes').textContent = totalNotes;
-                document.getElementById('todayNotes').textContent = todayNotes;
-                document.getElementById('favoriteSubject').textContent = favoriteSubject;
-            }
-
-            renderNotes() {
-                const container = document.getElementById('notesContainer');
-                const filteredNotes = this.getNotes(currentFilter);
-
-                if (filteredNotes.length === 0) {
-                    const categoryName = currentFilter === 'all' ? '' : 
-                        (categoryManager ? 
-                            (categoryManager.categories[currentFilter]?.name || currentFilter) : 
-                            (categories[currentFilter]?.name || currentFilter));
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <h3>🌸 還沒有筆記喔！</h3>
-                            <p>開始記錄你的第一筆${categoryName}筆記吧～</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                const notesHTML = filteredNotes.map(note => {
-                    const categoryName = categoryManager ? 
-                        (categoryManager.categories[note.category]?.name || note.category) :
-                        (categories[note.category]?.name || note.category);
-                    
-                    return `
-                        <div class="note-card" onclick="viewNote(${note.id})">
-                            <div class="note-title">${note.title}</div>
-                            <div class="note-content">${note.content.substring(0, 100)}${note.content.length > 100 ? '...' : ''}</div>
-                            <div class="note-meta">
-                                <span class="note-category">${categoryName}</span>
-                                <span>${new Date(note.createdAt).toLocaleDateString()}</span>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-
-                container.innerHTML = `<div class="notes-grid">${notesHTML}</div>`;
-            }
-        }
-
-        // CategoryManager 類別
-        class CategoryManager {
-            constructor() {
-                this.categories = this.loadCategories();
-            }
-
-            loadCategories() {
-                const saved = localStorage.getItem('miruku_categories');
-                return saved ? JSON.parse(saved) : categories;
-            }
-
-            saveCategories() {
-                localStorage.setItem('miruku_categories', JSON.stringify(this.categories));
-                this.updateCategoryList();
-                this.updateNoteFormCategories();
-            }
-
-            getCategories() {
-                return this.categories;
-            }
-
-            addCategory(key, data) {
-                if (this.categories[key]) {
-                    throw new Error('類別代碼已存在');
-                }
-                this.categories[key] = data;
-                this.saveCategories();
-            }
-
-            updateCategory(key, data) {
-                if (!this.categories[key]) {
-                    throw new Error('類別不存在');
-                }
-                this.categories[key] = data;
-                this.saveCategories();
-            }
-
-            removeCategory(key) {
-                if (!this.categories[key]) {
-                    throw new Error('類別不存在');
-                }
-                
-                // 檢查是否有筆記使用此類別
-                const notesWithCategory = notesManager.notes.filter(note => note.category === key);
-                if (notesWithCategory.length > 0) {
-                    if (!confirm(`此類別有 ${notesWithCategory.length} 筆筆記，刪除後這些筆記將移至「其他」分類。確定要刪除嗎？`)) {
-                        return false;
-                    }
-                    
-                    // 將筆記移至 "other" 類別
-                    notesWithCategory.forEach(note => {
-                        notesManager.updateNote(note.id, { category: 'other' });
-                    });
-                }
-                
-                delete this.categories[key];
-                this.saveCategories();
-                
-                // 如果當前篩選的是被刪除的類別，則切換到全部
-                if (currentFilter === key) {
-                    filterNotes('all');
-                }
-                
-                return true;
-            }
-
-            getCategoryCount(key) {
-                return notesManager.notes.filter(note => note.category === key).length;
-            }
-
-            updateCategoryList() {
-                this.renderCategoryList();
-            }
-
-            renderCategoryList() {
-                const categoryList = document.getElementById('categoryList');
-                let html = '<li class="category-item active" onclick="filterNotes(\'all\')">📋 全部</li>';
-                
-                for (const [key, category] of Object.entries(this.categories)) {
-                    const isActive = currentFilter === key ? 'active' : '';
-                    html += `<li class="category-item ${isActive}" onclick="filterNotes('${key}')">${category.name}</li>`;
-                }
-                
-                categoryList.innerHTML = html;
-            }
-
-            updateNoteFormCategories() {
-                const select = document.getElementById('noteCategory');
-                if (select) {
-                    let html = '';
-                    for (const [key, category] of Object.entries(this.categories)) {
-                        html += `<option value="${key}">${category.name}</option>`;
-                    }
-                    select.innerHTML = html;
-                }
-            }
-
-            renderCategoryManageList() {
-                const container = document.getElementById('categoryManageList');
-                let html = '';
-                
-                for (const [key, category] of Object.entries(this.categories)) {
-                    const count = this.getCategoryCount(key);
-                    html += `
-                        <div class="category-manage-item">
-                            <div class="category-info">
-                                <span class="category-icon">${category.icon}</span>
-                                <div class="category-details">
-                                    <h4>${category.name}
-                                        <span class="category-count">${count} 筆記</span>
-                                    </h4>
-                                    <p>代碼: ${key}</p>
-                                </div>
-                            </div>
-                            <div class="category-actions">
-                                <button class="btn btn-small" onclick="editCategory('${key}')">✏️ 編輯</button>
-                                <button class="btn btn-small danger" onclick="deleteCategory('${key}')">🗑️ 刪除</button>
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                container.innerHTML = html;
-            }
-        }
-
-        // CategoryUI 類別
-        class CategoryUI {
-            constructor(categoryManager) {
-                this.categoryManager = categoryManager;
-            }
-
-            openCategoryModal() {
-                this.categoryManager.renderCategoryManageList();
-                document.getElementById('categoryModal').style.display = 'block';
-            }
-
-            updateCategoryDisplay() {
-                this.categoryManager.renderCategoryList();
-                this.categoryManager.updateNoteFormCategories();
-            }
-        }
-
-        // 初始化應用程式
-        let notesManager, categoryManager, categoryUI;
-
-        function initializeMirukuApp() {
-            console.log('初始化 Miruku 應用程式...');
-            
-            notesManager = new NotesManager();
-            categoryManager = new CategoryManager();
-            categoryUI = new CategoryUI(categoryManager);
-            
-            // 初始化界面
-            categoryManager.renderCategoryList();
-            categoryManager.updateNoteFormCategories();
-            notesManager.updateStats();
-            notesManager.renderNotes();
-            
-            console.log('Miruku 應用程式初始化完成！');
-        }
-
-        // 主題切換
-        function toggleTheme() {
-            document.body.classList.toggle('dark');
-            const theme = document.body.classList.contains('dark') ? 'dark' : 'light';
-            localStorage.setItem('miruku_theme', theme);
-        }
-
-        // 載入儲存的主題
-        function loadTheme() {
-            const savedTheme = localStorage.getItem('miruku_theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark');
-            }
-        }
-
-        // 筆記相關功能
-        function openAddNoteModal() {
-            document.getElementById('addNoteModal').style.display = 'block';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-            if (modalId === 'addNoteModal') {
-                document.getElementById('noteForm').reset();
-            } else if (modalId === 'categoryModal') {
-                document.getElementById('addCategoryForm').reset();
-            } else if (modalId === 'editCategoryModal') {
-                document.getElementById('editCategoryForm').reset();
-            }
-        }
-
-        function filterNotes(category) {
-            currentFilter = category;
-            
-            // 更新類別選擇狀態
-            document.querySelectorAll('.category-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            event.target.classList.add('active');
-            
-            notesManager.renderNotes();
-        }
-
-        function viewNote(id) {
-            const note = notesManager.notes.find(n => n.id === id);
-            if (note) {
-                const categoryName = categoryManager ? 
-                    (categoryManager.categories[note.category]?.name || note.category) :
-                    (categories[note.category]?.name || note.category);
-                
-                alert(`標題: ${note.title}\n\n內容: ${note.content}\n\n分類: ${categoryName}\n\n建立時間: ${new Date(note.createdAt).toLocaleString()}`);
-            }
-        }
-
-        function importNotes() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        try {
-                            const importedNotes = JSON.parse(e.target.result);
-                            notesManager.notes = [...notesManager.notes, ...importedNotes];
-                            notesManager.saveNotes();
-                            alert('筆記匯入成功！');
-                        } catch (error) {
-                            alert('匯入失敗：檔案格式錯誤');
-                        }
-                    };
-                    reader.readAsText(file);
-                }
-            };
-            input.click();
-        }
-
-        function exportNotes() {
-            const dataStr = JSON.stringify(notesManager.notes, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `miruku_notes_${new Date().toISOString().split('T')[0]}.json`;
-            link.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function openCategoryModal() {
-            categoryUI.openCategoryModal();
-        }
-
-        // 類別管理功能
-        function editCategory(key) {
-            const category = categoryManager.categories[key];
-            if (!category) return;
-            
-            document.getElementById('editCategoryKey').value = key;
-            document.getElementById('editCategoryIcon').value = category.icon;
-            document.getElementById('editCategoryName').value = category.name.replace(/^[^\s]+\s/, ''); // 移除前面的 emoji
-            
-            document.getElementById('editCategoryModal').style.display = 'block';
-        }
-
-        function deleteCategory(key) {
-            const category = categoryManager.categories[key];
-            if (!category) return;
-            
-            if (confirm(`確定要刪除「${category.name}」類別嗎？`)) {
-                try {
-                    if (categoryManager.removeCategory(key)) {
-                        alert('類別已成功刪除！');
-                        categoryManager.renderCategoryManageList();
-                    }
-                } catch (error) {
-                    alert('刪除失敗：' + error.message);
-                }
-            }
-        }
-
-        // 表單提交處理
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('頁面載入完成，開始初始化...');
-            
-            loadTheme();
-            
-            setTimeout(() => {
-                initializeMirukuApp();
-            }, 100);
-
-            // 筆記表單提交
-            document.getElementById('noteForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const noteData = {
-                    title: document.getElementById('noteTitle').value,
-                    category: document.getElementById('noteCategory').value,
-                    content: document.getElementById('noteContent').value
-                };
-
-                notesManager.addNote(noteData);
-                closeModal('addNoteModal');
-                
-                alert('筆記已成功儲存！');
-            });
-
-            // 新增類別表單提交
-            document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const key = document.getElementById('categoryKey').value;
-                const icon = document.getElementById('categoryIcon').value;
-                const name = document.getElementById('categoryName').value;
-                
-                try {
-                    categoryManager.addCategory(key, {
-                        name: `${icon} ${name}`,
-                        icon: icon
-                    });
-                    
-                    alert('類別已成功新增！');
-                    document.getElementById('addCategoryForm').reset();
-                    categoryManager.renderCategoryManageList();
-                } catch (error) {
-                    alert('新增失敗：' + error.message);
-                }
-            });
-
-            // 編輯類別表單提交
-            document.getElementById('editCategoryForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const key = document.getElementById('editCategoryKey').value;
-                const icon = document.getElementById('editCategoryIcon').value;
-                const name = document.getElementById('editCategoryName').value;
-                
-                try {
-                    categoryManager.updateCategory(key, {
-                        name: `${icon} ${name}`,
-                        icon: icon
-                    });
-                    
-                    alert('類別已成功更新！');
-                    closeModal('editCategoryModal');
-                    categoryManager.renderCategoryManageList();
-                } catch (error) {
-                    alert('更新失敗：' + error.message);
-                }
-            });
-
-            // 點擊模態框外部關閉
-            window.addEventListener('click', function(e) {
-                if (e.target.classList.contains('modal')) {
-                    e.target.style.display = 'none';
-                }
-            });
+    // 主初始化函數
+    function initializeMirukuApp() {
+      console.log('開始初始化 Miruku 應用程式...');
+      
+      try {
+        // 檢查必要的類別是否已載入
+        const requiredClasses = [
+          { name: 'CategoryManager', file: 'categories.js' },
+          { name: 'CategoryUI', file: 'category-ui.js' },
+          { name: 'NotesManager', file: 'notes.js' }
+        ];
+        
+        const missingClasses = [];
+        
+        requiredClasses.forEach(function(cls) {
+          if (typeof window[cls.name] === 'undefined') {
+            missingClasses.push(cls.name + ' (檢查 js/' + cls.file + ')');
+          }
         });
-
-        console.log('UI 管理器初始化完成');
-    </script>
+        
+        if (missingClasses.length > 0) {
+          console.error('缺少必要的類別:', missingClasses);
+          alert('缺少必要的檔案:\n' + missingClasses.join('\n') + '\n\n請確保所有 JavaScript 檔案都已正確上傳到 GitHub。');
+          return;
+        }
+        
+        // 初始化組件
+        if (typeof window.categoryManager === 'undefined') {
+          window.categoryManager = new CategoryManager();
+          window.categoryManager.initialize();
+          console.log('✓ CategoryManager 初始化完成');
+        }
+        
+        if (typeof window.categoryUI === 'undefined') {
+          window.categoryUI = new CategoryUI();
+          window.categoryUI.initialize();
+          console.log('✓ CategoryUI 初始化完成');
+        }
+        
+        if (typeof window.notesManager === 'undefined') {
+          window.notesManager = new NotesManager();
+          window.notesManager.initialize();
+          console.log('✓ NotesManager 初始化完成');
+        }
+        
+        // 初始化主應用程式
+        if (typeof initializeApp === 'function') {
+          initializeApp();
+        }
+        
+        // 綁定事件
+        bindCustomEvents();
+        
+        // 更新UI
+        updateCategoryUI();
+        
+        console.log('🎉 Miruku 應用程式初始化完成！');
+        
+      } catch (error) {
+        console.error('初始化失敗:', error);
+        alert('應用程式初始化失敗: ' + error.message);
+      }
+    }
+    
+    // 綁定自訂事件
+    function bindCustomEvents() {
+      console.log('綁定自訂事件...');
+      
+      // 管理類別按鈕
+      const manageCategoriesBtn = document.getElementById('manageCategoriesBtn');
+      if (manageCategoriesBtn) {
+        manageCategoriesBtn.addEventListener('click', function() {
+          if (window.categoryUI && typeof window.categoryUI.openModal === 'function') {
+            window.categoryUI.openModal();
+          } else {
+            alert('類別管理功能尚未載入，請稍後再試。');
+          }
+        });
+      }
+      
+      // 全部類別按鈕
+      const allCategoriesBtn = document.getElementById('allCategoriesBtn');
+      if (allCategoriesBtn) {
+        allCategoriesBtn.addEventListener('click', function() {
+          filterByCategory('all');
+        });
+      }
+    }
+    
+    // 安全的篩選函數
+    function filterByCategory(category) {
+      console.log('篩選類別:', category);
+      
+      if (window.notesManager && typeof window.notesManager.filterByCategory === 'function') {
+        window.notesManager.filterByCategory(category);
+        
+        if (typeof renderNotes === 'function') {
+          renderNotes();
+        }
+        
+        // 更新按鈕狀態
+        updateFilterButtonsState(category);
+      } else {
+        console.error('NotesManager 未正確初始化或不存在 filterByCategory 方法');
+      }
+    }
+    
+    // 更新篩選按鈕狀態
+    function updateFilterButtonsState(activeCategory) {
+      const buttons = document.querySelectorAll('.btn-filter');
+      buttons.forEach(function(btn) {
+        btn.classList.remove('active');
+        
+        if (activeCategory === 'all' && btn.id === 'allCategoriesBtn') {
+          btn.classList.add('active');
+        } else if (btn.getAttribute('data-category') === activeCategory) {
+          btn.classList.add('active');
+        }
+      });
+    }
+    
+    // 更新類別UI
+    function updateCategoryUI() {
+      console.log('更新類別UI...');
+      
+      if (!window.categoryManager) {
+        console.warn('CategoryManager 不存在，跳過UI更新');
+        return;
+      }
+      
+      try {
+        // 更新類別選單
+        window.categoryManager.updateCategorySelect();
+        
+        // 更新篩選按鈕
+        updateFilterButtons();
+        
+      } catch (error) {
+        console.error('更新類別UI時發生錯誤:', error);
+      }
+    }
+    
+    // 動態更新篩選按鈕
+    function updateFilterButtons() {
+      const container = document.getElementById('filterButtonsContainer');
+      if (!container || !window.categoryManager) {
+        return;
+      }
+      
+      try {
+        // 清空容器但保留"全部"按鈕
+        const allBtn = document.getElementById('allCategoriesBtn');
+        container.innerHTML = '';
+        if (allBtn) {
+          container.appendChild(allBtn);
+        } else {
+          // 重新創建"全部"按鈕
+          const newAllBtn = document.createElement('button');
+          newAllBtn.className = 'btn btn-filter active';
+          newAllBtn.id = 'allCategoriesBtn';
+          newAllBtn.textContent = '全部';
+          newAllBtn.addEventListener('click', function() {
+            filterByCategory('all');
+          });
+          container.appendChild(newAllBtn);
+        }
+        
+        // 添加類別按鈕
+        const categories = window.categoryManager.getAllCategories();
+        categories.forEach(function(category) {
+          const button = document.createElement('button');
+          button.className = 'btn btn-filter';
+          button.innerHTML = category.icon + ' ' + category.name;
+          button.setAttribute('data-category', category.name);
+          button.addEventListener('click', function() {
+            filterByCategory(category.name);
+          });
+          container.appendChild(button);
+        });
+        
+        console.log('篩選按鈕已更新，共 ' + (categories.length + 1) + ' 個按鈕');
+        
+      } catch (error) {
+        console.error('更新篩選按鈕時發生錯誤:', error);
+      }
+    }
+    
+    // 全域函數，供其他腳本使用
+    window.filterByCategory = filterByCategory;
+    window.updateFilterButtons = updateFilterButtons;
+    window.updateCategoryUI = updateCategoryUI;
+  </script>
 </body>
 </html>
