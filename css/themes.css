@@ -325,13 +325,227 @@ textarea {
     box-shadow 0.3s ease;
 }
 
-/* 主題切換按鈕樣式 */
+/* ================================
+   UI 控制項樣式
+   ================================ */
+
+.ui-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.theme-controls,
+.font-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.control-label {
+  color: white;
+  font-weight: 500;
+  min-width: fit-content;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.font-selector {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  backdrop-filter: blur(10px);
+}
+
+.font-selector:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.font-selector:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+.font-selector option {
+  padding: 0.5rem;
+  background: white;
+  color: var(--text);
+}
+
+/* 主題選擇器樣式更新 */
 .theme-selector {
   display: flex;
   gap: 0.5rem;
   margin: 1rem 0;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+/* ================================
+   字體主題特殊效果
+   ================================ */
+
+/* 圓體字型特殊效果 */
+body.font-kosugi,
+body.font-mplus,
+body.font-comfortaa,
+body.font-fredoka,
+body.font-varela {
+  letter-spacing: 0.3px;
+}
+
+body.font-kosugi .note-title,
+body.font-mplus .note-title,
+body.font-comfortaa .note-title,
+body.font-fredoka .note-title,
+body.font-varela .note-title {
+  letter-spacing: 0.5px;
+}
+
+/* 襯線字體特殊效果 */
+body.font-noto-serif {
+  line-height: 1.7;
+}
+
+body.font-noto-serif .note-content {
+  line-height: 1.8;
+  letter-spacing: 0.2px;
+}
+
+body.font-noto-serif .note-title {
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* 英文字體特殊調整 */
+body.font-quicksand,
+body.font-nunito,
+body.font-poppins {
+  letter-spacing: 0.2px;
+}
+
+body.font-quicksand .note-title,
+body.font-nunito .note-title,
+body.font-poppins .note-title {
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+/* Fredoka 字體特殊效果 */
+body.font-fredoka {
+  line-height: 1.65;
+}
+
+body.font-fredoka .note-title {
+  font-weight: 500;
+  letter-spacing: 0.8px;
+}
+
+body.font-fredoka header h1 {
+  letter-spacing: 1px;
+}
+
+/* 字體切換動畫 */
+.note-title,
+.note-content,
+header h1,
+header p {
+  transition: font-family 0.3s ease, letter-spacing 0.3s ease, line-height 0.3s ease;
+}
+
+/* 字體預覽效果 */
+.font-selector option {
+  padding: 0.8rem 1rem;
+  line-height: 1.5;
+}
+
+.font-selector:focus option:hover {
+  background: var(--primary);
+  color: white;
+}
+
+/* 字體預覽樣式 */
+.font-preview {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  padding: 1rem 1.5rem;
+  margin-top: 0.5rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  z-index: 1000;
+  white-space: nowrap;
+}
+
+.font-controls {
+  position: relative;
+}
+
+.preview-text {
+  font-size: 1.1rem;
+  color: var(--text);
+  font-weight: 500;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+/* 字體預覽動畫 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .ui-controls {
+    gap: 0.75rem;
+  }
+  
+  .theme-controls,
+  .font-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .control-label {
+    margin-bottom: 0.25rem;
+  }
+  
+  .font-selector {
+    width: 100%;
+    max-width: 200px;
+  }
 }
 
 .theme-btn {

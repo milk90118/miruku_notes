@@ -12,6 +12,59 @@
   --dark-text: #E0E0E0;
   --dark-card: #2A2A2A;
   --dark-border: #404040;
+  
+  /* 字體變數 */
+  --font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+  --font-weight: 400;
+}
+
+/* 字體主題 */
+body.font-zen {
+  --font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+}
+
+body.font-kosugi {
+  --font-family: 'Kosugi Maru', 'Noto Sans TC', sans-serif;
+}
+
+body.font-mplus {
+  --font-family: 'M PLUS Rounded 1c', 'Noto Sans TC', sans-serif;
+}
+
+body.font-sawarabi {
+  --font-family: 'Sawarabi Gothic', 'Noto Sans TC', sans-serif;
+}
+
+body.font-noto-sans {
+  --font-family: 'Noto Sans TC', sans-serif;
+}
+
+body.font-noto-serif {
+  --font-family: 'Noto Serif TC', serif;
+}
+
+body.font-quicksand {
+  --font-family: 'Quicksand', 'Noto Sans TC', sans-serif;
+}
+
+body.font-nunito {
+  --font-family: 'Nunito', 'Noto Sans TC', sans-serif;
+}
+
+body.font-comfortaa {
+  --font-family: 'Comfortaa', 'Noto Sans TC', sans-serif;
+}
+
+body.font-fredoka {
+  --font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+}
+
+body.font-varela {
+  --font-family: 'Varela Round', 'Noto Sans TC', sans-serif;
+}
+
+body.font-poppins {
+  --font-family: 'Poppins', 'Noto Sans TC', sans-serif;
 }
 
 * {
@@ -21,12 +74,12 @@
 }
 
 body {
-  font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+  font-family: var(--font-family);
   background-color: var(--background);
   color: var(--text);
   line-height: 1.6;
   padding: 1rem;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease, font-family 0.3s ease;
   min-height: 100vh;
 }
 

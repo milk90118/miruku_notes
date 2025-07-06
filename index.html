@@ -4,11 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Miruku 醫學筆記</title>
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Kosugi+Maru&family=M+PLUS+Rounded+1c:wght@400;500;700&family=Sawarabi+Gothic&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;500;700&family=Quicksand:wght@400;500;700&family=Nunito:wght@400;500;700&family=Comfortaa:wght@400;500;700&family=Fredoka:wght@400;500;700&family=Varela+Round&family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/category-styles.css">
 </head>
-<body>
+<body class="font-zen">
   <div class="container">
     <header>
       <h1>M 醬 探索日記 MED x CS x LIFE</h1>
@@ -52,12 +53,14 @@
         <button class="btn btn-edit" onclick="clearForm()" id="clearBtn" style="display: none;">🔄 取消編輯</button>
         <button class="btn btn-success" onclick="importNotes()">📥 匯入筆記</button>
         <button class="btn btn-info" onclick="exportNotes()">📤 匯出筆記</button>
+        <button class="manage-categories-btn" onclick="categoryUI.openModal()">🗂️ 管理類別</button>
       </div>
     </div>
 
     <div class="search-section">
       <input type="text" id="searchInput" class="input" placeholder="🔍 搜尋筆記..." onkeyup="searchNotes()">
       <div class="filter-buttons">
+        <!-- 篩選按鈕會動態生成 -->
         <button class="btn btn-filter active" onclick="filterByCategory('all')">全部</button>
         <button class="btn btn-filter" onclick="filterByCategory('解剖學')">🦴 解剖學</button>
         <button class="btn btn-filter" onclick="filterByCategory('生理學')">❤️ 生理學</button>
@@ -81,13 +84,40 @@
   <!-- 隱藏的檔案上傳輸入 -->
   <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="handleFileUpload(event)">
 
-  <script src="js/app.js"></script>
+  <!-- JavaScript 載入順序很重要 -->
   <script src="js/notes.js"></script>
+  <script src="js/categories.js"></script>
+  <script src="js/category-ui.js"></script>
+  <script src="js/app.js"></script>
   <script src="js/ui.js"></script>
   <script>
     // 初始化應用程式
     document.addEventListener('DOMContentLoaded', function() {
-      initializeApp();
+      console.log('DOM 載入完成，開始初始化...');
+      
+      // 確保所有必要的類別都已定義
+      if (typeof CategoryManager === 'undefined') {
+        console.error('CategoryManager 未定義！請檢查 categories.js 是否正確載入。');
+        return;
+      }
+      
+      if (typeof CategoryUI === 'undefined') {
+        console.error('CategoryUI 未定義！請檢查 category-ui.js 是否正確載入。');
+        return;
+      }
+      
+      if (typeof NotesManager === 'undefined') {
+        console.error('NotesManager 未定義！請檢查 notes.js 是否正確載入。');
+        return;
+      }
+      
+      // 初始化應用程式
+      try {
+        initializeApp();
+      } catch (error) {
+        console.error('初始化失敗:', error);
+        alert('應用程式初始化失敗，請檢查 Console 錯誤訊息或重新整理頁面。');
+      }
     });
   </script>
 </body>

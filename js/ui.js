@@ -2,8 +2,23 @@
 class UIManager {
   constructor() {
     this.currentTheme = 'default';
+    this.currentFont = 'zen';
     this.isDarkMode = false;
     this.themes = ['default', 'milktea', 'lavender', 'matcha', 'peach', 'cloud'];
+    this.fonts = [
+      { id: 'zen', name: '禪圓體', family: 'Zen Maru Gothic' },
+      { id: 'kosugi', name: '小杉圓體', family: 'Kosugi Maru' },
+      { id: 'mplus', name: 'M+ 圓體', family: 'M PLUS Rounded 1c' },
+      { id: 'sawarabi', name: '早蕨黑體', family: 'Sawarabi Gothic' },
+      { id: 'noto-sans', name: '思源黑體', family: 'Noto Sans TC' },
+      { id: 'noto-serif', name: '思源宋體', family: 'Noto Serif TC' },
+      { id: 'quicksand', name: 'Quicksand', family: 'Quicksand' },
+      { id: 'nunito', name: 'Nunito', family: 'Nunito' },
+      { id: 'comfortaa', name: 'Comfortaa', family: 'Comfortaa' },
+      { id: 'fredoka', name: 'Fredoka', family: 'Fredoka' },
+      { id: 'varela', name: 'Varela Round', family: 'Varela Round' },
+      { id: 'poppins', name: 'Poppins', family: 'Poppins' }
+    ];
   }
 
   // 初始化 UI
@@ -17,10 +32,18 @@ class UIManager {
   // 載入 UI 設定
   loadUISettings() {
     const savedTheme = localStorage.getItem('miruku-ui-theme');
+    const savedFont = localStorage.getItem('miruku-ui-font');
     const savedDarkMode = localStorage.getItem('miruku-theme');
     
     if (savedTheme && this.themes.includes(savedTheme)) {
       this.setTheme(savedTheme);
+    }
+    
+    if (savedFont && this.fonts.some(f => f.id === savedFont)) {
+      this.setFont(savedFont, false);
+    } else {
+      // 設定預設字體
+      this.setFont('zen', false);
     }
     
     if (savedDarkMode === 'dark') {
@@ -34,11 +57,11 @@ class UIManager {
     const header = document.querySelector('header');
     if (!header) return;
 
-    const themeSelector = document.createElement('div');
-    themeSelector.className = 'theme-selector';
-    themeSelector.innerHTML = `
+    const controlsContainer = document.createElement('div');
+    controlsContainer.className = 'ui-controls';
+    controlsContainer.innerHTML = `
       <div class="theme-controls">
-        <span style="color: white; margin-right: 1rem;">🎨 選擇主題：</span>
+        <span class="control-label">🎨 主題：</span>
         ${this.themes.map(theme => `
           <button class="theme-btn ${theme} ${theme === this.currentTheme ? 'active' : ''}" 
                   onclick="uiManager.setTheme('${theme}')"
@@ -47,9 +70,24 @@ class UIManager {
           </button>
         `).join('')}
       </div>
+      
+      <div class="font-controls">
+        <span class="control-label">✨ 字體：</span>
+        <select class="font-selector" onchange="uiManager.setFont(this.value)" onfocus="uiManager.showFontPreview()" onblur="uiManager.hideFontPreview()">
+          ${this.fonts.map(font => `
+            <option value="${font.id}" ${font.id === this.currentFont ? 'selected' : ''}
+                    style="font-family: ${font.family}">
+              ${font.name}
+            </option>
+          `).join('')}
+        </select>
+        <div class="font-preview" style="display: none;">
+          <span class="preview-text">醫學筆記 Medical Notes ✨</span>
+        </div>
+      </div>
     `;
 
-    header.appendChild(themeSelector);
+    header.appendChild(controlsContainer);
   }
 
   // 取得主題名稱
@@ -65,8 +103,62 @@ class UIManager {
     return names[theme] || theme;
   }
 
+  // 設定字體
+  setFont(fontId, shouldShowNotification = true) {
+    const font = this.fonts.find(f => f.id === fontId);
+    if (!font) return;
+
+    // 移除舊字體類別
+    this.fonts.forEach(f => {
+      document.body.classList.remove(`font-${f.id}`);
+    });
+
+    // 套用新字體
+    document.body.classList.add(`font-${fontId}`);
+
+    this.currentFont = fontId;
+    localStorage.setItem('miruku-ui-font', fontId);
+
+    // 更新字體選擇器
+    const fontSelector = document.querySelector('.font-selector');
+    if (fontSelector) {
+      fontSelector.value = fontId;
+    }
+
+    // 顯示字體切換通知（只在用戶主動切換時顯示）
+    if (shouldShowNotification) {
+      setTimeout(() => {
+        showNotification(`已切換到 ${font.name} 字體`, 'info');
+      }, 100);
+    }
+  }
+
   // 設定主題
   setTheme(themeName) {
+    if (!this.themes.includes(themeName)) return;
+
+    // 移除舊主題
+    this.themes.forEach(theme => {
+      document.body.classList.remove(`theme-${theme}`);
+    });
+
+    // 套用新主題
+    if (themeName !== 'default') {
+      document.body.classList.add(`theme-${themeName}`);
+    }
+
+    this.currentTheme = themeName;
+    localStorage.setItem('miruku-ui-theme', themeName);
+
+    // 更新主題按鈕狀態
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    document.querySelector(`.theme-btn.${themeName}`)?.classList.add('active');
+
+    // 顯示主題切換通知
+    showNotification(`已切換到${this.getThemeName(themeName)}`, 'info');
+  }
     if (!this.themes.includes(themeName)) return;
 
     // 移除舊主題
