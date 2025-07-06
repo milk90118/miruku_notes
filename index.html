@@ -40,7 +40,6 @@
       <input type="text" id="noteTitle" class="input" placeholder="輸入筆記標題...">
       <textarea id="noteContent" class="input" placeholder="輸入筆記內容..."></textarea>
       <select id="noteCategory">
-        <!-- 類別選項會透過 JavaScript 動態生成 -->
         <option value="解剖學">🦴 解剖學</option>
         <option value="生理學">❤️ 生理學</option>
         <option value="藥理學">💊 藥理學</option>
@@ -54,15 +53,14 @@
         <button class="btn btn-edit" onclick="clearForm()" id="clearBtn" style="display: none;">🔄 取消編輯</button>
         <button class="btn btn-success" onclick="importNotes()">📥 匯入筆記</button>
         <button class="btn btn-info" onclick="exportNotes()">📤 匯出筆記</button>
-        <button class="manage-categories-btn" onclick="openCategoryManager()">🗂️ 管理類別</button>
+        <button class="manage-categories-btn" id="manageCategoriesBtn">🗂️ 管理類別</button>
       </div>
     </div>
 
     <div class="search-section">
       <input type="text" id="searchInput" class="input" placeholder="🔍 搜尋筆記..." onkeyup="searchNotes()">
       <div class="filter-buttons" id="filterButtonsContainer">
-        <!-- 篩選按鈕會透過 JavaScript 動態生成 -->
-        <button class="btn btn-filter active" onclick="filterByCategory('all')">全部</button>
+        <button class="btn btn-filter active" id="allCategoriesBtn">全部</button>
       </div>
     </div>
 
@@ -88,191 +86,207 @@
   <script src="js/app.js"></script>
   <script src="js/ui.js"></script>
   <script>
-    // 全域變數聲明
-    let categoryManager = null;
-    let categoryUI = null;
-    let notesManager = null;
-    let uiManager = null;
+    // 等待頁面完全載入
+    window.addEventListener('load', function() {
+      console.log('頁面載入完成，開始初始化...');
+      
+      // 延遲執行以確保所有腳本都已載入
+      setTimeout(function() {
+        initializeMirukuApp();
+      }, 200);
+    });
 
-    // 安全的類別管理器開啟函數
-    function openCategoryManager() {
-      console.log('嘗試開啟類別管理器...');
-      if (categoryUI && typeof categoryUI.openModal === 'function') {
-        categoryUI.openModal();
-      } else {
-        console.error('CategoryUI 未正確初始化');
-        alert('類別管理功能尚未載入，請稍等片刻後再試，或重新整理頁面。');
+    // 主初始化函數
+    function initializeMirukuApp() {
+      console.log('開始初始化 Miruku 應用程式...');
+      
+      try {
+        // 檢查必要的類別是否已載入
+        const requiredClasses = [
+          { name: 'CategoryManager', file: 'categories.js' },
+          { name: 'CategoryUI', file: 'category-ui.js' },
+          { name: 'NotesManager', file: 'notes.js' }
+        ];
+        
+        const missingClasses = [];
+        
+        requiredClasses.forEach(function(cls) {
+          if (typeof window[cls.name] === 'undefined') {
+            missingClasses.push(cls.name + ' (檢查 js/' + cls.file + ')');
+          }
+        });
+        
+        if (missingClasses.length > 0) {
+          console.error('缺少必要的類別:', missingClasses);
+          alert('缺少必要的檔案:\n' + missingClasses.join('\n') + '\n\n請確保所有 JavaScript 檔案都已正確上傳到 GitHub。');
+          return;
+        }
+        
+        // 初始化組件
+        if (typeof window.categoryManager === 'undefined') {
+          window.categoryManager = new CategoryManager();
+          window.categoryManager.initialize();
+          console.log('✓ CategoryManager 初始化完成');
+        }
+        
+        if (typeof window.categoryUI === 'undefined') {
+          window.categoryUI = new CategoryUI();
+          window.categoryUI.initialize();
+          console.log('✓ CategoryUI 初始化完成');
+        }
+        
+        if (typeof window.notesManager === 'undefined') {
+          window.notesManager = new NotesManager();
+          window.notesManager.initialize();
+          console.log('✓ NotesManager 初始化完成');
+        }
+        
+        // 初始化主應用程式
+        if (typeof initializeApp === 'function') {
+          initializeApp();
+        }
+        
+        // 綁定事件
+        bindCustomEvents();
+        
+        // 更新UI
+        updateCategoryUI();
+        
+        console.log('🎉 Miruku 應用程式初始化完成！');
+        
+      } catch (error) {
+        console.error('初始化失敗:', error);
+        alert('應用程式初始化失敗: ' + error.message);
       }
     }
-
+    
+    // 綁定自訂事件
+    function bindCustomEvents() {
+      console.log('綁定自訂事件...');
+      
+      // 管理類別按鈕
+      const manageCategoriesBtn = document.getElementById('manageCategoriesBtn');
+      if (manageCategoriesBtn) {
+        manageCategoriesBtn.addEventListener('click', function() {
+          if (window.categoryUI && typeof window.categoryUI.openModal === 'function') {
+            window.categoryUI.openModal();
+          } else {
+            alert('類別管理功能尚未載入，請稍後再試。');
+          }
+        });
+      }
+      
+      // 全部類別按鈕
+      const allCategoriesBtn = document.getElementById('allCategoriesBtn');
+      if (allCategoriesBtn) {
+        allCategoriesBtn.addEventListener('click', function() {
+          filterByCategory('all');
+        });
+      }
+    }
+    
     // 安全的篩選函數
     function filterByCategory(category) {
       console.log('篩選類別:', category);
-      if (notesManager && typeof notesManager.filterByCategory === 'function') {
-        notesManager.filterByCategory(category);
+      
+      if (window.notesManager && typeof window.notesManager.filterByCategory === 'function') {
+        window.notesManager.filterByCategory(category);
+        
         if (typeof renderNotes === 'function') {
           renderNotes();
         }
+        
         // 更新按鈕狀態
         updateFilterButtonsState(category);
       } else {
-        console.error('NotesManager 未正確初始化');
+        console.error('NotesManager 未正確初始化或不存在 filterByCategory 方法');
       }
     }
-
+    
     // 更新篩選按鈕狀態
     function updateFilterButtonsState(activeCategory) {
       const buttons = document.querySelectorAll('.btn-filter');
-      buttons.forEach(btn => {
+      buttons.forEach(function(btn) {
         btn.classList.remove('active');
-        const btnCategory = btn.textContent.includes('全部') ? 'all' : 
-                          btn.getAttribute('data-category') || 
-                          btn.textContent.replace(/^\S+\s/, ''); // 移除圖示部分
-        if ((activeCategory === 'all' && btn.textContent.includes('全部')) ||
-            btnCategory === activeCategory) {
+        
+        if (activeCategory === 'all' && btn.id === 'allCategoriesBtn') {
+          btn.classList.add('active');
+        } else if (btn.getAttribute('data-category') === activeCategory) {
           btn.classList.add('active');
         }
       });
     }
-
-    // 動態更新篩選按鈕
-    function updateFilterButtons() {
-      console.log('更新篩選按鈕...');
-      const container = document.getElementById('filterButtonsContainer');
-      if (!container || !categoryManager) {
-        console.warn('篩選按鈕容器或類別管理器不存在');
+    
+    // 更新類別UI
+    function updateCategoryUI() {
+      console.log('更新類別UI...');
+      
+      if (!window.categoryManager) {
+        console.warn('CategoryManager 不存在，跳過UI更新');
         return;
       }
-
-      // 清空容器
-      container.innerHTML = '';
-
-      // 添加"全部"按鈕
-      const allButton = document.createElement('button');
-      allButton.className = 'btn btn-filter active';
-      allButton.textContent = '全部';
-      allButton.onclick = () => filterByCategory('all');
-      container.appendChild(allButton);
-
-      // 添加類別按鈕
-      try {
-        const categories = categoryManager.getAllCategories();
-        categories.forEach(category => {
-          const button = document.createElement('button');
-          button.className = 'btn btn-filter';
-          button.innerHTML = `${category.icon} ${category.name}`;
-          button.setAttribute('data-category', category.name);
-          button.onclick = () => filterByCategory(category.name);
-          container.appendChild(button);
-        });
-        console.log(`已生成 ${categories.length + 1} 個篩選按鈕`);
-      } catch (error) {
-        console.error('生成篩選按鈕時發生錯誤:', error);
-      }
-    }
-
-    // 初始化檢查函數
-    function checkAndInitialize() {
-      console.log('檢查組件載入狀態...');
-      
-      const checks = {
-        CategoryManager: typeof CategoryManager !== 'undefined',
-        CategoryUI: typeof CategoryUI !== 'undefined',
-        NotesManager: typeof NotesManager !== 'undefined'
-      };
-
-      console.log('組件檢查結果:', checks);
-
-      // 如果有組件未載入，顯示錯誤訊息
-      const missingComponents = Object.entries(checks)
-        .filter(([name, loaded]) => !loaded)
-        .map(([name]) => name);
-
-      if (missingComponents.length > 0) {
-        console.error('未載入的組件:', missingComponents);
-        const errorMessage = `以下組件未正確載入: ${missingComponents.join(', ')}\n\n請檢查對應的 JS 檔案是否存在：\n${missingComponents.map(name => `- js/${name.toLowerCase().replace('manager', '').replace('ui', '-ui')}.js`).join('\n')}`;
-        alert(errorMessage);
-        return false;
-      }
-
-      return true;
-    }
-
-    // 初始化應用程式
-    function initializeApplication() {
-      console.log('開始初始化應用程式...');
       
       try {
-        // 1. 初始化類別管理器
-        if (typeof CategoryManager !== 'undefined') {
-          categoryManager = new CategoryManager();
-          categoryManager.initialize();
-          console.log('✓ CategoryManager 初始化完成');
-        }
-
-        // 2. 初始化類別 UI
-        if (typeof CategoryUI !== 'undefined') {
-          categoryUI = new CategoryUI();
-          categoryUI.initialize();
-          console.log('✓ CategoryUI 初始化完成');
-        }
-
-        // 3. 初始化筆記管理器
-        if (typeof NotesManager !== 'undefined') {
-          notesManager = new NotesManager();
-          notesManager.initialize();
-          console.log('✓ NotesManager 初始化完成');
-        }
-
-        // 4. 初始化主應用程式
-        if (typeof initializeApp === 'function') {
-          initializeApp();
-          console.log('✓ 主應用程式初始化完成');
-        }
-
-        // 5. 更新UI組件
-        setTimeout(() => {
-          if (categoryManager) {
-            categoryManager.updateCategorySelect();
-            updateFilterButtons();
-            console.log('✓ UI 組件更新完成');
-          }
-        }, 100);
-
-        console.log('🎉 應用程式初始化成功！');
+        // 更新類別選單
+        window.categoryManager.updateCategorySelect();
+        
+        // 更新篩選按鈕
+        updateFilterButtons();
         
       } catch (error) {
-        console.error('❌ 初始化過程中發生錯誤:', error);
-        alert('應用程式初始化失敗。請檢查瀏覽器控制台獲取詳細錯誤訊息，或嘗試重新整理頁面。');
+        console.error('更新類別UI時發生錯誤:', error);
       }
     }
-
-    // DOM 載入完成後執行
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('DOM 載入完成，開始初始化流程...');
-      
-      // 延遲執行，確保所有腳本都已載入
-      setTimeout(() => {
-        if (checkAndInitialize()) {
-          initializeApplication();
-        }
-      }, 100);
-    });
-
-    // 為了相容性，也監聽 window.onload
-    window.addEventListener('load', function() {
-      console.log('頁面完全載入完成');
-      
-      // 如果還沒有初始化，再嘗試一次
-      if (!categoryManager || !categoryUI || !notesManager) {
-        console.log('檢測到組件未初始化，嘗試重新初始化...');
-        setTimeout(() => {
-          if (checkAndInitialize()) {
-            initializeApplication();
-          }
-        }, 200);
+    
+    // 動態更新篩選按鈕
+    function updateFilterButtons() {
+      const container = document.getElementById('filterButtonsContainer');
+      if (!container || !window.categoryManager) {
+        return;
       }
-    });
+      
+      try {
+        // 清空容器但保留"全部"按鈕
+        const allBtn = document.getElementById('allCategoriesBtn');
+        container.innerHTML = '';
+        if (allBtn) {
+          container.appendChild(allBtn);
+        } else {
+          // 重新創建"全部"按鈕
+          const newAllBtn = document.createElement('button');
+          newAllBtn.className = 'btn btn-filter active';
+          newAllBtn.id = 'allCategoriesBtn';
+          newAllBtn.textContent = '全部';
+          newAllBtn.addEventListener('click', function() {
+            filterByCategory('all');
+          });
+          container.appendChild(newAllBtn);
+        }
+        
+        // 添加類別按鈕
+        const categories = window.categoryManager.getAllCategories();
+        categories.forEach(function(category) {
+          const button = document.createElement('button');
+          button.className = 'btn btn-filter';
+          button.innerHTML = category.icon + ' ' + category.name;
+          button.setAttribute('data-category', category.name);
+          button.addEventListener('click', function() {
+            filterByCategory(category.name);
+          });
+          container.appendChild(button);
+        });
+        
+        console.log('篩選按鈕已更新，共 ' + (categories.length + 1) + ' 個按鈕');
+        
+      } catch (error) {
+        console.error('更新篩選按鈕時發生錯誤:', error);
+      }
+    }
+    
+    // 全域函數，供其他腳本使用
+    window.filterByCategory = filterByCategory;
+    window.updateFilterButtons = updateFilterButtons;
+    window.updateCategoryUI = updateCategoryUI;
   </script>
 </body>
 </html>
