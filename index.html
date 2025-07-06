@@ -390,6 +390,102 @@
         body.dark .close:hover {
             color: #e1e1e1;
         }
+
+        .category-manage-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #eee;
+            transition: all 0.3s ease;
+        }
+
+        body.dark .category-manage-item {
+            background: #2c3e50;
+            border-color: #555;
+        }
+
+        .category-manage-item:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .category-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-icon {
+            font-size: 1.5rem;
+        }
+
+        .category-details h4 {
+            margin: 0;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        body.dark .category-details h4 {
+            color: #e1e1e1;
+        }
+
+        .category-details p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        body.dark .category-details p {
+            color: #bbb;
+        }
+
+        .category-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            min-width: auto;
+        }
+
+        .btn.danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .btn.danger:hover {
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .category-count {
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            margin-left: 10px;
+        }
+
+        .warning-text {
+            background: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #ffeaa7;
+        }
+
+        body.dark .warning-text {
+            background: #553d00;
+            color: #ffeb3b;
+            border-color: #b8860b;
+        }
     </style>
 </head>
 <body>
@@ -463,13 +559,7 @@
                 <div class="form-group">
                     <label for="noteCategory">分類</label>
                     <select id="noteCategory" required>
-                        <option value="anatomy">🦴 解剖學</option>
-                        <option value="physiology">❤️ 生理學</option>
-                        <option value="pharmacology">💊 藥理學</option>
-                        <option value="clinical">🏥 臨床醫學</option>
-                        <option value="pathology">🔬 病理學</option>
-                        <option value="diagnosis">🩺 診斷學</option>
-                        <option value="other">📚 其他</option>
+                        <!-- 動態生成選項 -->
                     </select>
                 </div>
                 <div class="form-group">
@@ -479,6 +569,72 @@
                 <div class="modal-actions">
                     <button type="button" class="btn secondary" onclick="closeModal('addNoteModal')">🔄 取消</button>
                     <button type="submit" class="btn">📒 儲存筆記</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 類別管理模態框 -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('categoryModal')">&times;</span>
+            <h2>🗂️ 管理類別</h2>
+            
+            <!-- 新增類別區塊 -->
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h3 style="margin-bottom: 15px;">➕ 新增類別</h3>
+                <form id="addCategoryForm">
+                    <div class="form-group">
+                        <label for="categoryKey">類別代碼</label>
+                        <input type="text" id="categoryKey" placeholder="例如: biochemistry" required pattern="[a-z_]+" title="只允許小寫字母和底線">
+                    </div>
+                    <div class="form-group">
+                        <label for="categoryIcon">圖示</label>
+                        <input type="text" id="categoryIcon" placeholder="例如: 🧬" required maxlength="2">
+                    </div>
+                    <div class="form-group">
+                        <label for="categoryName">名稱</label>
+                        <input type="text" id="categoryName" placeholder="例如: 生化學" required>
+                    </div>
+                    <button type="submit" class="btn">➕ 新增類別</button>
+                </form>
+            </div>
+
+            <!-- 現有類別列表 -->
+            <div>
+                <h3 style="margin-bottom: 15px;">📋 現有類別</h3>
+                <div id="categoryManageList">
+                    <!-- 動態生成類別列表 -->
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn secondary" onclick="closeModal('categoryModal')">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 編輯類別模態框 -->
+    <div id="editCategoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editCategoryModal')">&times;</span>
+            <h2>✏️ 編輯類別</h2>
+            <form id="editCategoryForm">
+                <div class="form-group">
+                    <label for="editCategoryKey">類別代碼</label>
+                    <input type="text" id="editCategoryKey" readonly style="background: #f0f0f0;">
+                </div>
+                <div class="form-group">
+                    <label for="editCategoryIcon">圖示</label>
+                    <input type="text" id="editCategoryIcon" required maxlength="2">
+                </div>
+                <div class="form-group">
+                    <label for="editCategoryName">名稱</label>
+                    <input type="text" id="editCategoryName" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn secondary" onclick="closeModal('editCategoryModal')">取消</button>
+                    <button type="submit" class="btn">💾 儲存變更</button>
                 </div>
             </form>
         </div>
@@ -574,7 +730,9 @@
                 for (const [category, count] of Object.entries(categoryCount)) {
                     if (count > maxCount) {
                         maxCount = count;
-                        favoriteSubject = categories[category]?.icon || category;
+                        favoriteSubject = categoryManager ? 
+                            (categoryManager.categories[category]?.icon || category) : 
+                            (categories[category]?.icon || category);
                     }
                 }
 
@@ -588,25 +746,35 @@
                 const filteredNotes = this.getNotes(currentFilter);
 
                 if (filteredNotes.length === 0) {
+                    const categoryName = currentFilter === 'all' ? '' : 
+                        (categoryManager ? 
+                            (categoryManager.categories[currentFilter]?.name || currentFilter) : 
+                            (categories[currentFilter]?.name || currentFilter));
                     container.innerHTML = `
                         <div class="empty-state">
                             <h3>🌸 還沒有筆記喔！</h3>
-                            <p>開始記錄你的第一筆${currentFilter === 'all' ? '' : categories[currentFilter]?.name || ''}筆記吧～</p>
+                            <p>開始記錄你的第一筆${categoryName}筆記吧～</p>
                         </div>
                     `;
                     return;
                 }
 
-                const notesHTML = filteredNotes.map(note => `
-                    <div class="note-card" onclick="viewNote(${note.id})">
-                        <div class="note-title">${note.title}</div>
-                        <div class="note-content">${note.content.substring(0, 100)}${note.content.length > 100 ? '...' : ''}</div>
-                        <div class="note-meta">
-                            <span class="note-category">${categories[note.category]?.name || note.category}</span>
-                            <span>${new Date(note.createdAt).toLocaleDateString()}</span>
+                const notesHTML = filteredNotes.map(note => {
+                    const categoryName = categoryManager ? 
+                        (categoryManager.categories[note.category]?.name || note.category) :
+                        (categories[note.category]?.name || note.category);
+                    
+                    return `
+                        <div class="note-card" onclick="viewNote(${note.id})">
+                            <div class="note-title">${note.title}</div>
+                            <div class="note-content">${note.content.substring(0, 100)}${note.content.length > 100 ? '...' : ''}</div>
+                            <div class="note-meta">
+                                <span class="note-category">${categoryName}</span>
+                                <span>${new Date(note.createdAt).toLocaleDateString()}</span>
+                            </div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
 
                 container.innerHTML = `<div class="notes-grid">${notesHTML}</div>`;
             }
@@ -615,7 +783,18 @@
         // CategoryManager 類別
         class CategoryManager {
             constructor() {
-                this.categories = categories;
+                this.categories = this.loadCategories();
+            }
+
+            loadCategories() {
+                const saved = localStorage.getItem('miruku_categories');
+                return saved ? JSON.parse(saved) : categories;
+            }
+
+            saveCategories() {
+                localStorage.setItem('miruku_categories', JSON.stringify(this.categories));
+                this.updateCategoryList();
+                this.updateNoteFormCategories();
             }
 
             getCategories() {
@@ -623,17 +802,55 @@
             }
 
             addCategory(key, data) {
+                if (this.categories[key]) {
+                    throw new Error('類別代碼已存在');
+                }
                 this.categories[key] = data;
-                this.updateCategoryList();
+                this.saveCategories();
+            }
+
+            updateCategory(key, data) {
+                if (!this.categories[key]) {
+                    throw new Error('類別不存在');
+                }
+                this.categories[key] = data;
+                this.saveCategories();
             }
 
             removeCategory(key) {
+                if (!this.categories[key]) {
+                    throw new Error('類別不存在');
+                }
+                
+                // 檢查是否有筆記使用此類別
+                const notesWithCategory = notesManager.notes.filter(note => note.category === key);
+                if (notesWithCategory.length > 0) {
+                    if (!confirm(`此類別有 ${notesWithCategory.length} 筆筆記，刪除後這些筆記將移至「其他」分類。確定要刪除嗎？`)) {
+                        return false;
+                    }
+                    
+                    // 將筆記移至 "other" 類別
+                    notesWithCategory.forEach(note => {
+                        notesManager.updateNote(note.id, { category: 'other' });
+                    });
+                }
+                
                 delete this.categories[key];
-                this.updateCategoryList();
+                this.saveCategories();
+                
+                // 如果當前篩選的是被刪除的類別，則切換到全部
+                if (currentFilter === key) {
+                    filterNotes('all');
+                }
+                
+                return true;
+            }
+
+            getCategoryCount(key) {
+                return notesManager.notes.filter(note => note.category === key).length;
             }
 
             updateCategoryList() {
-                // 重新渲染類別列表
                 this.renderCategoryList();
             }
 
@@ -642,10 +859,50 @@
                 let html = '<li class="category-item active" onclick="filterNotes(\'all\')">📋 全部</li>';
                 
                 for (const [key, category] of Object.entries(this.categories)) {
-                    html += `<li class="category-item" onclick="filterNotes('${key}')">${category.name}</li>`;
+                    const isActive = currentFilter === key ? 'active' : '';
+                    html += `<li class="category-item ${isActive}" onclick="filterNotes('${key}')">${category.name}</li>`;
                 }
                 
                 categoryList.innerHTML = html;
+            }
+
+            updateNoteFormCategories() {
+                const select = document.getElementById('noteCategory');
+                if (select) {
+                    let html = '';
+                    for (const [key, category] of Object.entries(this.categories)) {
+                        html += `<option value="${key}">${category.name}</option>`;
+                    }
+                    select.innerHTML = html;
+                }
+            }
+
+            renderCategoryManageList() {
+                const container = document.getElementById('categoryManageList');
+                let html = '';
+                
+                for (const [key, category] of Object.entries(this.categories)) {
+                    const count = this.getCategoryCount(key);
+                    html += `
+                        <div class="category-manage-item">
+                            <div class="category-info">
+                                <span class="category-icon">${category.icon}</span>
+                                <div class="category-details">
+                                    <h4>${category.name}
+                                        <span class="category-count">${count} 筆記</span>
+                                    </h4>
+                                    <p>代碼: ${key}</p>
+                                </div>
+                            </div>
+                            <div class="category-actions">
+                                <button class="btn btn-small" onclick="editCategory('${key}')">✏️ 編輯</button>
+                                <button class="btn btn-small danger" onclick="deleteCategory('${key}')">🗑️ 刪除</button>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                container.innerHTML = html;
             }
         }
 
@@ -656,12 +913,13 @@
             }
 
             openCategoryModal() {
-                // 實現類別管理模態框
-                alert('類別管理功能開發中！');
+                this.categoryManager.renderCategoryManageList();
+                document.getElementById('categoryModal').style.display = 'block';
             }
 
             updateCategoryDisplay() {
                 this.categoryManager.renderCategoryList();
+                this.categoryManager.updateNoteFormCategories();
             }
         }
 
@@ -675,6 +933,9 @@
             categoryManager = new CategoryManager();
             categoryUI = new CategoryUI(categoryManager);
             
+            // 初始化界面
+            categoryManager.renderCategoryList();
+            categoryManager.updateNoteFormCategories();
             notesManager.updateStats();
             notesManager.renderNotes();
             
@@ -705,6 +966,10 @@
             document.getElementById(modalId).style.display = 'none';
             if (modalId === 'addNoteModal') {
                 document.getElementById('noteForm').reset();
+            } else if (modalId === 'categoryModal') {
+                document.getElementById('addCategoryForm').reset();
+            } else if (modalId === 'editCategoryModal') {
+                document.getElementById('editCategoryForm').reset();
             }
         }
 
@@ -724,7 +989,11 @@
         function viewNote(id) {
             const note = notesManager.notes.find(n => n.id === id);
             if (note) {
-                alert(`標題: ${note.title}\n\n內容: ${note.content}\n\n分類: ${categories[note.category]?.name}\n\n建立時間: ${new Date(note.createdAt).toLocaleString()}`);
+                const categoryName = categoryManager ? 
+                    (categoryManager.categories[note.category]?.name || note.category) :
+                    (categories[note.category]?.name || note.category);
+                
+                alert(`標題: ${note.title}\n\n內容: ${note.content}\n\n分類: ${categoryName}\n\n建立時間: ${new Date(note.createdAt).toLocaleString()}`);
             }
         }
 
@@ -767,6 +1036,34 @@
             categoryUI.openCategoryModal();
         }
 
+        // 類別管理功能
+        function editCategory(key) {
+            const category = categoryManager.categories[key];
+            if (!category) return;
+            
+            document.getElementById('editCategoryKey').value = key;
+            document.getElementById('editCategoryIcon').value = category.icon;
+            document.getElementById('editCategoryName').value = category.name.replace(/^[^\s]+\s/, ''); // 移除前面的 emoji
+            
+            document.getElementById('editCategoryModal').style.display = 'block';
+        }
+
+        function deleteCategory(key) {
+            const category = categoryManager.categories[key];
+            if (!category) return;
+            
+            if (confirm(`確定要刪除「${category.name}」類別嗎？`)) {
+                try {
+                    if (categoryManager.removeCategory(key)) {
+                        alert('類別已成功刪除！');
+                        categoryManager.renderCategoryManageList();
+                    }
+                } catch (error) {
+                    alert('刪除失敗：' + error.message);
+                }
+            }
+        }
+
         // 表單提交處理
         document.addEventListener('DOMContentLoaded', function() {
             console.log('頁面載入完成，開始初始化...');
@@ -791,6 +1088,50 @@
                 closeModal('addNoteModal');
                 
                 alert('筆記已成功儲存！');
+            });
+
+            // 新增類別表單提交
+            document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const key = document.getElementById('categoryKey').value;
+                const icon = document.getElementById('categoryIcon').value;
+                const name = document.getElementById('categoryName').value;
+                
+                try {
+                    categoryManager.addCategory(key, {
+                        name: `${icon} ${name}`,
+                        icon: icon
+                    });
+                    
+                    alert('類別已成功新增！');
+                    document.getElementById('addCategoryForm').reset();
+                    categoryManager.renderCategoryManageList();
+                } catch (error) {
+                    alert('新增失敗：' + error.message);
+                }
+            });
+
+            // 編輯類別表單提交
+            document.getElementById('editCategoryForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const key = document.getElementById('editCategoryKey').value;
+                const icon = document.getElementById('editCategoryIcon').value;
+                const name = document.getElementById('editCategoryName').value;
+                
+                try {
+                    categoryManager.updateCategory(key, {
+                        name: `${icon} ${name}`,
+                        icon: icon
+                    });
+                    
+                    alert('類別已成功更新！');
+                    closeModal('editCategoryModal');
+                    categoryManager.renderCategoryManageList();
+                } catch (error) {
+                    alert('更新失敗：' + error.message);
+                }
             });
 
             // 點擊模態框外部關閉
